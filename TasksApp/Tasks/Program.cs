@@ -15,35 +15,12 @@ class Program
 
             do
             {
-                // need validations
-                Console.Write("What task action? ");
-                string taskAction = Console.ReadLine();
-
-                Console.Write("What did you do? ");
-                string taskTarget = Console.ReadLine();
-
-                Console.Write("What day to schedule? (mm/dd/yy) ");
-                string taskSchedDate = Console.ReadLine();
-
-                Console.Write("Have you completed this? (yes or no) ");
-                // improve as boolean values
-                string taskComplete = Console.ReadLine();
-
-                string taskCompDate;
-
-                if (taskComplete == "yes")
-                {
-                    Console.Write("When did you complete this task? (mm/dd/yy)");
-                    taskCompDate = Console.ReadLine();
-                } else {
-                    taskCompDate = null;
-                }
-
+                Task task = askForTask();
                 File.AppendAllText("tasks-log.txt",
-                    taskAction + ";" +
-                    taskTarget + ";" +
-                    taskSchedDate + ";" +
-                    taskCompDate + ";" +
+                    task.taskAction + ";" +
+                    task.taskTarget + ";" +
+                    task.taskSchedDate + ";" +
+                    task.taskCompDate + ";" +
                     Environment.NewLine
                 );
 
@@ -52,11 +29,56 @@ class Program
 
             } while (addMore == "yes");
         } else {
+            // modify logic to include supplies
             string[] taskLog = File.ReadAllLines("tasks-log.txt");
             foreach (string task in taskLog)
+            // need to make this pretty write out
             {
                 Console.WriteLine(task);
             }
         }
     }
+
+    public static Task askForTask()
+    {
+        string taskAction = RequestInput("What task action? ");
+        string taskTarget = RequestInput("To where? ");
+        string taskSchedDate = RequestInput("What day to schedule? (mm/dd/yy) ");
+        
+        string taskCompDate;
+        string taskComplete = RequestInput("Have you completed this (yes or no) ");
+        if (taskComplete == "yes")
+        {
+            taskCompDate = RequestInput("When did you complete this task? (mm/dd/yy) ");
+        } else {
+            taskCompDate = null;
+        }
+
+        Task task = new Task (taskAction, taskTarget, taskSchedDate, taskCompDate);
+        return task;
+    }
+
+    public static string RequestInput(string message)
+    // need validations
+    {
+        Console.Write(message);
+        return Console.ReadLine();
+    }
+
+    public class Task
+    {
+        // remember that public references in fields is a bad idea, refactor
+        public string taskAction;
+        public string taskTarget;
+        public string taskSchedDate;
+        public string taskCompDate;
+        public Task (string taskAction, string taskTarget, string taskSchedDate, string taskCompDate)
+        {
+            this.taskAction = taskAction;
+            this.taskTarget = taskTarget;
+            this.taskSchedDate = taskSchedDate;
+            this.taskCompDate = taskCompDate;
+        }
+    }
+
 }

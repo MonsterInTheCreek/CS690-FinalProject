@@ -15,12 +15,23 @@ class Program
 
             do
             {
-                Task task = askForTask();
+                AppTask task = AskForTask();
+
+                string prevDate;
+                if (task.PrevDate.HasValue)
+                {
+                    prevDate = task.PrevDate.Value.ToString("MM/dd/yy");
+                } else {
+                    prevDate = "";
+                }
+                
                 File.AppendAllText("tasks-log.txt",
-                    task.taskAction + ";" +
-                    task.taskTarget + ";" +
-                    task.taskSchedDate + ";" +
-                    task.taskCompDate + ";" +
+                    task.TaskAction + ";" +
+                    task.TaskTarget + ";" +
+                    task.SchedDate.ToString("MM/dd/yy") + ";" +
+                    task.Frequency + ";" +
+                    // CompDate does not get stored
+                    prevDate + ";" +
                     Environment.NewLine
                 );
 
@@ -32,53 +43,38 @@ class Program
             // modify logic to include supplies
             string[] taskLog = File.ReadAllLines("tasks-log.txt");
             foreach (string task in taskLog)
-            // need to make this pretty write out
+
             {
                 Console.WriteLine(task);
             }
         }
     }
 
-    public static Task askForTask()
+    public static AppTask AskForTask()
     {
-        string taskAction = RequestInput("What task action? ");
-        string taskTarget = RequestInput("To where? ");
-        string taskSchedDate = RequestInput("What day to schedule? (mm/dd/yy) ");
-        
-        string taskCompDate;
+        // Desperately need validations here, but lower priority than just getting to work
+        TaskAction taskAction = new TaskAction(RequestInput("What task action? "));
+        TaskTarget taskTarget = new TaskTarget(RequestInput("Where will you perform this? "));
+        DateTime schedDate = DateTime.Parse(RequestInput("What day to schedule? (mm/dd/yy) "));
+        int frequency = int.Parse(RequestInput("What frequency? (in days) "));
+        DateTime? compDate;
         string taskComplete = RequestInput("Have you completed this (yes or no) ");
         if (taskComplete == "yes")
         {
-            taskCompDate = RequestInput("When did you complete this task? (mm/dd/yy) ");
+            compDate = DateTime.Parse(RequestInput("When did you complete this task? (mm/dd/yy) "));
         } else {
-            taskCompDate = null;
+            compDate = null;
         }
-
-        Task task = new Task (taskAction, taskTarget, taskSchedDate, taskCompDate);
+        DateTime? prevDate = null;
+    
+        AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, compDate, prevDate);
         return task;
     }
-
+    
     public static string RequestInput(string message)
     // need validations
     {
         Console.Write(message);
         return Console.ReadLine();
     }
-
-    public class Task
-    {
-        // remember that public references in fields is a bad idea, refactor
-        public string taskAction;
-        public string taskTarget;
-        public string taskSchedDate;
-        public string taskCompDate;
-        public Task (string taskAction, string taskTarget, string taskSchedDate, string taskCompDate)
-        {
-            this.taskAction = taskAction;
-            this.taskTarget = taskTarget;
-            this.taskSchedDate = taskSchedDate;
-            this.taskCompDate = taskCompDate;
-        }
-    }
-
 }

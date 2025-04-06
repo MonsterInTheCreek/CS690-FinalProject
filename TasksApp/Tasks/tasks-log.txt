@@ -1,3 +1,2 @@
-mop;floor;02/20/2015;;
-wipe;counter;03/01/25;03/01/25;
-Tasks.TaskAction;Tasks.TaskTarget;5/1/2025 12:00:00 AM;7;;
+dust;bookshelf;03/01/25;10;;
+clean;bathroom;04/01/25;7;;

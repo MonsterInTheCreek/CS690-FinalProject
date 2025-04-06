@@ -8,6 +8,11 @@ public class TaskTarget
     {
         this.Name = name;
     }
+
+    public override string ToString()
+    {
+        return this.Name;
+    }
 }
 
 public class TaskAction
@@ -19,7 +24,14 @@ public class TaskAction
     {
         this.Name = name;
     }
+
+    public override string ToString()
+    {
+        return this.Name;
+    }
 }
+
+// ActionSupply class definition, pending, lower priority
 
 public class AppTask
 {

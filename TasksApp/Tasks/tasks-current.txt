@@ -1,0 +1,4 @@
+sweep;kitchen;04/01/25;7;;
+clean;bathroom;04/01/25;7;;
+wash;dishes;03/01/25;7;;
+clean;toilet;04/01/25;7;;

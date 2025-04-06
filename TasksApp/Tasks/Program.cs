@@ -17,23 +17,8 @@ class Program
             {
                 AppTask task = AskForTask();
 
-                string prevDate;
-                if (task.PrevDate.HasValue)
-                {
-                    prevDate = task.PrevDate.Value.ToString("MM/dd/yy");
-                } else {
-                    prevDate = "";
-                }
-                
-                File.AppendAllText("tasks-log.txt",
-                    task.TaskAction + ";" +
-                    task.TaskTarget + ";" +
-                    task.SchedDate.ToString("MM/dd/yy") + ";" +
-                    task.Frequency + ";" +
-                    // CompDate does not get stored
-                    prevDate + ";" +
-                    Environment.NewLine
-                );
+                DataWriter dataWriter = new DataWriter("tasks-current.txt");
+                dataWriter.AppendData(task);
 
                 Console.WriteLine("Add another? (yes or no) ");
                 addMore = Console.ReadLine();

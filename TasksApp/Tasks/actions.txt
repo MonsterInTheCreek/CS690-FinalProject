@@ -1,0 +1,5 @@
+clean
+dust
+wipe
+sweep
+wash

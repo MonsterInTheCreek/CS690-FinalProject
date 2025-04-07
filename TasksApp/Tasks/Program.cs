@@ -6,35 +6,71 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.Write("Add tasks or read tasks? (add or read): ");
-        string mode = Console.ReadLine();
-
-        if (mode == "add")
+        Console.WriteLine("Today is " + DateToString(DateTime.Now));
+        string entryChoice;
+        DataManager dataManager = new DataManager();
+        
+        do
         {
-            string addMore;
+            Console.WriteLine("Type: tasks, targets, actions, supplies, or exit ");
+            entryChoice = Console.ReadLine();
 
-            do
+            if (entryChoice == "supplies")
             {
-                AppTask task = AskForTask();
-
-                DataWriter dataWriter = new DataWriter("tasks-current.txt");
-                dataWriter.AppendData(task);
-
-                Console.WriteLine("Add another? (yes or no) ");
-                addMore = Console.ReadLine();
-
-            } while (addMore == "yes");
-        } else {
-            // modify logic to include supplies
-            string[] taskLog = File.ReadAllLines("tasks-log.txt");
-            foreach (string task in taskLog)
-
+                Console.WriteLine(Environment.NewLine + "Not implemented yet" + Environment.NewLine);
+            } else if (entryChoice == "tasks")
             {
-                Console.WriteLine(task);
+                Console.Write("Type: add, read, quit ");
+                string mode = Console.ReadLine();
+        
+                if (mode == "add")
+                {
+                    string addMore;
+
+                    do
+                    {
+                        AppTask task = AskForTask();
+
+                        DataWriter dataWriter = new DataWriter("tasks-current.txt");
+                        dataWriter.AppendData(task);
+
+                        Console.WriteLine("Add another? (yes or no) ");
+                        addMore = Console.ReadLine();
+
+                    } while (addMore != "no");
+            
+                } else if (mode == "read")
+                {
+                    // this isn't pretty at all yet, improve
+                    string[] taskLog = File.ReadAllLines("tasks-current.txt");
+                    foreach (string task in taskLog)
+
+                    {
+                        Console.WriteLine(task);
+                    }
+                } else
+                {
+                    // this is crappy logic, improve
+                    Console.WriteLine(Environment.NewLine + "Quitting" + Environment.NewLine);
+                }
+            } else if (entryChoice == "targets")
+            {
+                foreach (TaskTarget taskTarget in dataManager.TaskTargets)
+                {
+                    Console.WriteLine(taskTarget);
+                }
+                    
+            } else if (entryChoice == "actions")
+            {
+                foreach (TaskAction taskAction in dataManager.TaskActions)
+                {
+                    Console.WriteLine(taskAction);
+                }
             }
-        }
+        } while (entryChoice != "exit");
+        
     }
-
+    
     public static AppTask AskForTask()
     {
         // Desperately need validations here, but lower priority than just getting to work
@@ -61,5 +97,10 @@ class Program
     {
         Console.Write(message);
         return Console.ReadLine();
+    }
+
+    public static string DateToString(DateTime date)
+    {
+        return date.ToString("dd/MM/yy");
     }
 }

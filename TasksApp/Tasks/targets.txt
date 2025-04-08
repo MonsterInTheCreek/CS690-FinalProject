@@ -1,0 +1,6 @@
+bathroom
+shelves
+counter
+floor
+dishes
+floor

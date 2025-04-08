@@ -4,8 +4,7 @@ using System.IO;
 
 public class DataManager
 {
-    // Will ultimately ingest from persistent tasks-current, but I'm not there yet...
-    // All this currently just related to targets and actions
+    // Targets & Actions only at this point
     // Below has a lot of repeated code - DRY - good opportunity to abstract
 
     public List<TaskTarget> TaskTargets { get; set; }

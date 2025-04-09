@@ -9,11 +9,15 @@ public class DataManager
 
     public List<TaskTarget> TaskTargets { get; set; }
     public List<TaskAction> TaskActions { get; set; }
+    public List<AppTask> AppTasks { get; set; } 
+    
+    
     string targetsFile = "targets.txt";
     string actionsFile = "actions.txt";
     
     public DataManager()
     {
+        // TaskTargets class instantiation read from targets.txt
         if (!File.Exists(targetsFile))
         {
             // create targets file with dummy data
@@ -35,7 +39,7 @@ public class DataManager
             TaskTargets.Add(new TaskTarget(targetName));
         }
         
-        
+        // TaskActions class instantiation read from actions.txt
         if (!File.Exists(actionsFile))
         {
             // create actions file with dummy data
@@ -56,6 +60,39 @@ public class DataManager
         {
             TaskActions.Add(new TaskAction(actionName));
         }
+        
+        AppTasks = new List<AppTask>();
+        var tasksFileContent = File.ReadAllLines("tasks.txt");
+        foreach (var line in tasksFileContent)
+        {
+            var splitline = line.Split(";", StringSplitOptions.RemoveEmptyEntries);
+            
+            var persistentAction = splitline[0];
+            var action = new TaskAction(persistentAction);
+            
+            var persistentTarget = splitline[1];
+            var target = new TaskTarget(persistentTarget);
+            
+            var persistentSchedDate = splitline[2];
+            var schedDate = new SchedDate(DateTime.Parse(persistentSchedDate));
+            
+            var persistentFrequency = splitline[3];
+            var frequency = new Frequency(int.Parse(persistentFrequency));
+            
+            // CompDate?
+            
+            var persistentPrevDate = splitline[4];
+            var prevDate = new PrevDate(DateTime.Parse(persistentPrevDate));
+            
+            // Figure out how to access these.  Do I need to instantiate above first?
+            // Do I need to / want to add the CompDate?
+            // Dates need to be nullable
+            
+            AppTasks.Add(new AppTask(action, target, schedDate, frequency, prevDate));
+            
+            
+        }
+        
     }
 
     public void SynchTargets()

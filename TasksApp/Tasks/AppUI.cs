@@ -65,7 +65,7 @@ public class AppUI
                 } else if (targetChoice == "remove")
                 {
                     Console.WriteLine("Not implemented yet");
-                    // Apparently removing objects is much more difficult, I've tried like 10 ways to do this...
+                    // Apparently removing objects is more difficult, I've tried like 10 ways to do this...
                     // string oldTarget = RequestInput("What would you like to remove? ");
                     // TaskTarget removeTarget = new TaskTarget(oldTarget);
                     // dataManager.RemoveTarget(removeTarget);

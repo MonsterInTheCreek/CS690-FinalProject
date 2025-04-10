@@ -9,11 +9,15 @@ public class DataManager
 
     public List<TaskTarget> TaskTargets { get; set; }
     public List<TaskAction> TaskActions { get; set; }
+    public List<AppTask> AppTasks { get; set; } 
+    
+    
     string targetsFile = "targets.txt";
     string actionsFile = "actions.txt";
     
     public DataManager()
     {
+        // TaskTargets class instantiation read from targets.txt
         if (!File.Exists(targetsFile))
         {
             // create targets file with dummy data
@@ -35,7 +39,7 @@ public class DataManager
             TaskTargets.Add(new TaskTarget(targetName));
         }
         
-        
+        // TaskActions class instantiation read from actions.txt
         if (!File.Exists(actionsFile))
         {
             // create actions file with dummy data
@@ -56,6 +60,41 @@ public class DataManager
         {
             TaskActions.Add(new TaskAction(actionName));
         }
+        
+        AppTasks = new List<AppTask>();
+        var tasksFileContent = File.ReadAllLines("tasks-current.txt");
+        DateTime? prevDate;
+        foreach (var line in tasksFileContent)
+        {
+            //var splitline = line.Split(";", StringSplitOptions.RemoveEmptyEntries);
+            var splitline = line.Split(";");
+            
+            var persistentAction = splitline[0];
+            var action = new TaskAction(persistentAction);
+            
+            var persistentTarget = splitline[1];
+            var target = new TaskTarget(persistentTarget);
+            
+            var persistentSchedDate = splitline[2];
+            var schedDate = DateTime.Parse(persistentSchedDate);
+            
+            var persistentFrequency = splitline[3];
+            var frequency = int.Parse(persistentFrequency);
+            
+            var persistentPrevDate = splitline[4];
+            if (persistentPrevDate != "")
+            {
+                prevDate = DateTime.Parse(persistentPrevDate);
+            }
+            else
+            {
+                prevDate = null;
+            }
+            
+            AppTasks.Add(new AppTask(action, target, schedDate, frequency, prevDate));
+            
+        }
+        
     }
 
     public void SynchTargets()

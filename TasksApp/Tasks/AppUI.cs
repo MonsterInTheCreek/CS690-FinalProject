@@ -10,21 +10,35 @@ public class AppUI
     }
     
     public void Show()
-        {
-        Console.WriteLine("Today is " + DateToString(DateTime.Now));
+    {
         string entryChoice;
         DataManager dataManager = new DataManager();
         
         do
         {
-            entryChoice = RequestInput("Type: tasks, targets, actions, supplies, or exit ");
+            DateTime today = DateTime.Now;
+            Console.WriteLine("Today is " + DateToString(today));
 
+            List<AppTask> todayTasks = new List<AppTask>();
+            
+            foreach (AppTask task in dataManager.AppTasks)
+            {
+                if (task.SchedDate == today.Date)
+                {
+                    Console.WriteLine(
+                        task.TaskAction + " " + task.TaskTarget + " is due today!"
+                    );
+                }
+            }
+            
+            entryChoice = RequestInput("Type: tasks, targets, actions, supplies, or exit ");
+            
             if (entryChoice == "supplies")
             {
                 Console.WriteLine(Environment.NewLine + "Not implemented yet" + Environment.NewLine);
             } else if (entryChoice == "tasks")
             {
-                string mode = RequestInput("Type: add, read, quit ");
+                string mode = RequestInput("Type: add, list, quit ");
         
                 if (mode == "add")
                 {
@@ -41,13 +55,16 @@ public class AppUI
 
                     } while (addMore != "no");
             
-                } else if (mode == "read")
+                } else if (mode == "list")
                 {
-                    // this isn't pretty at all yet, improve
-                    string[] taskLog = File.ReadAllLines("tasks-current.txt");
-                    foreach (string task in taskLog)
+                    foreach (AppTask task in dataManager.AppTasks)
                     {
-                        Console.WriteLine(task);
+                        Console.WriteLine(
+                            "[" + task.TaskAction.Name + "]" + " " +
+                            "[" + task.TaskTarget.Name + "]" + " scheduled for " +
+                            "[" + task.SchedDate.ToString("MM/dd/yy") + "]" + ", repeats every " +
+                            "[" + task.Frequency + "]" + " days."
+                        );
                     }
                 }
             } else if (entryChoice == "targets")
@@ -65,10 +82,7 @@ public class AppUI
                 } else if (targetChoice == "remove")
                 {
                     Console.WriteLine("Not implemented yet");
-                    // Apparently removing objects is more difficult, I've tried like 10 ways to do this...
-                    // string oldTarget = RequestInput("What would you like to remove? ");
-                    // TaskTarget removeTarget = new TaskTarget(oldTarget);
-                    // dataManager.RemoveTarget(removeTarget);
+                    // Proving difficult to get to work...
                 }
 
             } else if (entryChoice == "actions")
@@ -100,17 +114,8 @@ public class AppUI
         TaskTarget taskTarget = new TaskTarget(RequestInput("Where will you perform this? "));
         DateTime schedDate = DateTime.Parse(RequestInput("What day to schedule? (mm/dd/yy) "));
         int frequency = int.Parse(RequestInput("What frequency? (in days) "));
-        DateTime? compDate;
-        string taskComplete = RequestInput("Have you completed this (yes or no) ");
-        if (taskComplete == "yes")
-        {
-            compDate = DateTime.Parse(RequestInput("When did you complete this task? (mm/dd/yy) "));
-        } else {
-            compDate = null;
-        }
         DateTime? prevDate = null;
-    
-        AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, compDate, prevDate);
+        AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, prevDate);
         return task;
     }
     
@@ -123,6 +128,6 @@ public class AppUI
 
     public static string DateToString(DateTime date)
     {
-        return date.ToString("dd/MM/yy");
+        return date.ToString("MM/dd/yy");
     }
 }

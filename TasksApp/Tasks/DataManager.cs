@@ -62,10 +62,12 @@ public class DataManager
         }
         
         AppTasks = new List<AppTask>();
-        var tasksFileContent = File.ReadAllLines("tasks.txt");
+        var tasksFileContent = File.ReadAllLines("tasks-current.txt");
+        DateTime? prevDate;
         foreach (var line in tasksFileContent)
         {
-            var splitline = line.Split(";", StringSplitOptions.RemoveEmptyEntries);
+            //var splitline = line.Split(";", StringSplitOptions.RemoveEmptyEntries);
+            var splitline = line.Split(";");
             
             var persistentAction = splitline[0];
             var action = new TaskAction(persistentAction);
@@ -74,22 +76,22 @@ public class DataManager
             var target = new TaskTarget(persistentTarget);
             
             var persistentSchedDate = splitline[2];
-            var schedDate = new SchedDate(DateTime.Parse(persistentSchedDate));
+            var schedDate = DateTime.Parse(persistentSchedDate);
             
             var persistentFrequency = splitline[3];
-            var frequency = new Frequency(int.Parse(persistentFrequency));
-            
-            // CompDate?
+            var frequency = int.Parse(persistentFrequency);
             
             var persistentPrevDate = splitline[4];
-            var prevDate = new PrevDate(DateTime.Parse(persistentPrevDate));
-            
-            // Figure out how to access these.  Do I need to instantiate above first?
-            // Do I need to / want to add the CompDate?
-            // Dates need to be nullable
+            if (persistentPrevDate != "")
+            {
+                prevDate = DateTime.Parse(persistentPrevDate);
+            }
+            else
+            {
+                prevDate = null;
+            }
             
             AppTasks.Add(new AppTask(action, target, schedDate, frequency, prevDate));
-            
             
         }
         

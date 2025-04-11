@@ -22,9 +22,6 @@ class Program
         Console.WriteLine("UI is pretty ugly - need to upgrade via Spectre.Console");
         Console.WriteLine("Low priority Supplies functionality not implemented at all");
         Console.WriteLine("Code in general is kludgy, needs much refactoring");
-        Console.WriteLine("");
-        Console.WriteLine("...Press any key...");
-        Console.ReadKey(true);
-        Console.Clear();
+        AppUI.Wait();
     }
 }

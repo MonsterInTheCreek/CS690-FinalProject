@@ -23,7 +23,7 @@ public class AppUI
             
             foreach (AppTask task in dataManager.AppTasks)
             {
-                if (task.SchedDate == today.Date)
+                if (task.SchedDate <= today.Date)
                 {
                     Console.WriteLine(
                         task.TaskAction + " " + task.TaskTarget + " is due today!"
@@ -35,9 +35,11 @@ public class AppUI
             
             if (entryChoice == "supplies")
             {
-                Console.WriteLine(Environment.NewLine + "Not implemented yet" + Environment.NewLine);
+                Console.WriteLine(Environment.NewLine + "Not implemented yet");
+                Wait();
             } else if (entryChoice == "tasks")
             {
+                Console.Clear();
                 string mode = RequestInput("Type: add, list, quit> ");
         
                 if (mode == "add")
@@ -67,46 +69,53 @@ public class AppUI
                             "[" + task.Frequency + "]" + " days."
                         );
                     }
+                    Wait();
                 }
             } else if (entryChoice == "targets")
             {
+                Console.Clear();
+                Console.WriteLine("Targets:" + Environment.NewLine + "--------");
                 foreach (TaskTarget taskTarget in dataManager.TaskTargets)
                 {
                     Console.WriteLine(taskTarget);
                 }
             
                 string targetChoice = RequestInput("add or remove or quit? ");
-                Console.WriteLine("Targets not yet used internally as options for new tasks - pending");
                 if (targetChoice == "add")
                 {
                     string newTarget = RequestInput("What would you like to add? ");
                     dataManager.AddTarget(new TaskTarget(newTarget));
                 } else if (targetChoice == "remove")
                 {
-                    Console.WriteLine(Environment.NewLine + "Not implemented yet" + Environment.NewLine);
+                    Console.WriteLine(Environment.NewLine + "Not implemented yet");
+                    Wait();
                     // Proving difficult to get to work...
                 }
-            
+                Console.Clear();
             } else if (entryChoice == "actions")
             {
+                Console.Clear();
+                Console.WriteLine("Actions:" + Environment.NewLine + "--------");
                 foreach (TaskAction taskAction in dataManager.TaskActions)
                 {
                     Console.WriteLine(taskAction);
                 }
                 
                 string actionChoice = RequestInput("add or remove or quit? ");
-                Console.WriteLine("Actions not yet used internally as options for new tasks - pending");
                 if (actionChoice == "add")
                 {
                     string newAction = RequestInput("What would you like to add? ");
                     dataManager.AddAction(new TaskAction(newAction));
                 } else if (actionChoice == "remove")
                 {
-                    Console.WriteLine(Environment.NewLine + "Not implemented yet" + Environment.NewLine);
+                    Console.WriteLine(Environment.NewLine + "Not implemented yet");
+                    Wait();
                     // As above, haven't figured this out yet
                 }
+                Console.Clear();
             } else if (entryChoice == "complete")
             {
+                Console.Clear();
                 int tasksCount = dataManager.AppTasks.Count;
                 for (int i = 0; i < tasksCount; i++)
                 {
@@ -163,5 +172,13 @@ public class AppUI
     public static string DateToString(DateTime date)
     {
         return date.ToString("MM/dd/yy");
+    }
+
+    public static void Wait()
+    {
+        Console.WriteLine("");
+        Console.WriteLine("...Press any key...");
+        Console.ReadKey(true);
+        Console.Clear();
     }
 }

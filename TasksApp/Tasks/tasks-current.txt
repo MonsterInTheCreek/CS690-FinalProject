@@ -1,7 +1,4 @@
-sweep;kitchen;04/01/25;7;;
-clean;bathroom;04/01/25;7;;
-wash;dishes;03/01/25;7;;
-clean;toilet;04/01/25;7;;
-sweep;floor;04/20/25;7;;
-hide;cookies;05/01/25;5;;
+sweep;kitchen;04/12/25;7;;
+clean;bathroom;04/12/25;7;;
 wash;car;04/10/25;14;;
+clean;sink;04/13/25;3;04/10/25;

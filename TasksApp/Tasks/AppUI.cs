@@ -1,8 +1,11 @@
 namespace Tasks;
 
+using Spectre.Console;
+
 public class AppUI
 {
     private DataManager dataManager;
+    private static string nl = Environment.NewLine;  // save space
 
     public AppUI()
     {
@@ -31,16 +34,16 @@ public class AppUI
                 }
             }
             
-            entryChoice = RequestInput("Type: complete, tasks, targets, actions, supplies, or exit> ");
+            entryChoice = MakeChoice(new List<string> {"complete","tasks","targets","actions","supplies","exit"});
             
             if (entryChoice == "supplies")
             {
-                Console.WriteLine(Environment.NewLine + "Not implemented yet");
+                Console.WriteLine(nl + "Not implemented yet");
                 Wait();
             } else if (entryChoice == "tasks")
             {
                 Console.Clear();
-                string mode = RequestInput("Type: add, list, quit> ");
+                string mode = MakeChoice(new List<string> { "add", "list", "quit" });
         
                 if (mode == "add")
                 {
@@ -53,7 +56,7 @@ public class AppUI
                         DataWriter dataWriter = new DataWriter("tasks-current.txt");
                         dataWriter.AppendData(task);
                         
-                        addMore = RequestInput("Add another? (yes or no) ");
+                        addMore = MakeChoice(new List<string> { "yes", "no" });
 
                     } while (addMore != "no");
             
@@ -74,20 +77,20 @@ public class AppUI
             } else if (entryChoice == "targets")
             {
                 Console.Clear();
-                Console.WriteLine("Targets:" + Environment.NewLine + "--------");
+                Console.WriteLine("Targets:" + nl + "--------");
                 foreach (TaskTarget taskTarget in dataManager.TaskTargets)
                 {
                     Console.WriteLine(taskTarget);
                 }
-            
-                string targetChoice = RequestInput("add or remove or quit? ");
+                
+                string targetChoice = MakeChoice(new List<string> { "add", "remove", "quit" });
                 if (targetChoice == "add")
                 {
                     string newTarget = RequestInput("What would you like to add? ");
                     dataManager.AddTarget(new TaskTarget(newTarget));
                 } else if (targetChoice == "remove")
                 {
-                    Console.WriteLine(Environment.NewLine + "Not implemented yet");
+                    Console.WriteLine(nl + "Not implemented yet");
                     Wait();
                     // Proving difficult to get to work...
                 }
@@ -95,20 +98,20 @@ public class AppUI
             } else if (entryChoice == "actions")
             {
                 Console.Clear();
-                Console.WriteLine("Actions:" + Environment.NewLine + "--------");
+                Console.WriteLine("Actions:" + nl + "--------");
                 foreach (TaskAction taskAction in dataManager.TaskActions)
                 {
                     Console.WriteLine(taskAction);
                 }
                 
-                string actionChoice = RequestInput("add or remove or quit? ");
+                string actionChoice = MakeChoice(new List<string> { "add", "remove", "quit" });
                 if (actionChoice == "add")
                 {
                     string newAction = RequestInput("What would you like to add? ");
                     dataManager.AddAction(new TaskAction(newAction));
                 } else if (actionChoice == "remove")
                 {
-                    Console.WriteLine(Environment.NewLine + "Not implemented yet");
+                    Console.WriteLine(nl + "Not implemented yet");
                     Wait();
                     // As above, haven't figured this out yet
                 }
@@ -178,5 +181,14 @@ public class AppUI
         Console.WriteLine("...Press any key...");
         Console.ReadKey(true);
         Console.Clear();
+    }
+
+    public static string MakeChoice(List<string> choices)
+    {
+        string choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Make a selection:")
+                .AddChoices(choices));
+        return choice;
     }
 }

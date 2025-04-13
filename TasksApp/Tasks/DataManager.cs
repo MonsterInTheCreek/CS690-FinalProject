@@ -14,14 +14,13 @@ public class DataManager
     
     public DataManager()
     {
-        if (!File.Exists(targetsFile))
-        {
-            // create targets file with dummy data
-            File.Create(targetsFile).Close();
-            File.AppendAllText(targetsFile, 
-                "bathroom" + nl + "shelves" + nl + "counter" + nl + "floor" + nl + "dishes" + nl
-                );
-        }
+        BuildFileIfNull(targetsFile,
+            "bathroom" + nl + "shelves" + nl + "counter" + nl + "floor" + nl + "dishes" + nl
+            );
+        
+        BuildFileIfNull(actionsFile,
+            "clean" + nl + "dust" + nl + "wipe" + nl + "sweep" + nl + "wash" + nl
+            );
         
         TaskTargets = new List<TaskTarget>();
         var targetsFileData = File.ReadAllLines(targetsFile);
@@ -29,15 +28,6 @@ public class DataManager
         foreach (string targetName in targetsFileData)
         {
             TaskTargets.Add(new TaskTarget(targetName));
-        }
-        
-        if (!File.Exists(actionsFile))
-        {
-            // create actions file with dummy data
-            File.Create(actionsFile).Close();
-            File.AppendAllText(actionsFile,
-                "clean" + nl + "dust" + nl + "wipe" + nl + "sweep" + nl + "wash" + nl
-                );
         }
 
         TaskActions = new List<TaskAction>();
@@ -73,6 +63,15 @@ public class DataManager
         }
     }
 
+    public void BuildFileIfNull(string newFile, string dummyData)
+    {
+        if (!File.Exists(newFile))
+        {
+            File.Create(newFile).Close();
+            File.AppendAllText(newFile, dummyData);
+        }
+    }
+    
     public void SynchTargets()
     {
         File.Delete(targetsFile);

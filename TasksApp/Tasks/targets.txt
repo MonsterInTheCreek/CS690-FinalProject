@@ -3,4 +3,4 @@ shelves
 counter
 floor
 dishes
-floor
+sweep

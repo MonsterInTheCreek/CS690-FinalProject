@@ -131,8 +131,6 @@ public class AppUI
                 string iComplete = RequestInput("Which task did you complete?  Choose by number> ");
                 Console.WriteLine("Congrats!");
                 
-                // I should remove from memory and synch, but that's going to be a refactoring step
-                // This is pure grade A kludge, I hate this, but sacrifice to get it out the door tonight, and it works...
                 List<string> tasksLines = File.ReadAllLines("tasks-current.txt").ToList();
                 tasksLines.RemoveAt(int.Parse(iComplete));
                 File.WriteAllLines("tasks-current.txt", tasksLines);

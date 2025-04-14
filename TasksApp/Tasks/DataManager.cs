@@ -4,32 +4,23 @@ using System.IO;
 
 public class DataManager
 {
-    // Targets & Actions only at this point
-    // Below has a lot of repeated code - DRY - good opportunity to abstract
-
+    private static string nl = Environment.NewLine;  // save space
     public List<TaskTarget> TaskTargets { get; set; }
     public List<TaskAction> TaskActions { get; set; }
     public List<AppTask> AppTasks { get; set; } 
-    
     
     string targetsFile = "targets.txt";
     string actionsFile = "actions.txt";
     
     public DataManager()
     {
-        // TaskTargets class instantiation read from targets.txt
-        if (!File.Exists(targetsFile))
-        {
-            // create targets file with dummy data
-            File.Create(targetsFile).Close();
-            File.AppendAllText(targetsFile,
-                "bathroom" + Environment.NewLine +
-                "shelves" + Environment.NewLine +
-                "counter" + Environment.NewLine +
-                "floor" + Environment.NewLine +
-                "dishes" + Environment.NewLine
-                );
-        }
+        BuildFileIfNull(targetsFile,
+            "bathroom" + nl + "shelves" + nl + "counter" + nl + "floor" + nl + "dishes" + nl
+            );
+        
+        BuildFileIfNull(actionsFile,
+            "clean" + nl + "dust" + nl + "wipe" + nl + "sweep" + nl + "wash" + nl
+            );
         
         TaskTargets = new List<TaskTarget>();
         var targetsFileData = File.ReadAllLines(targetsFile);
@@ -37,20 +28,6 @@ public class DataManager
         foreach (string targetName in targetsFileData)
         {
             TaskTargets.Add(new TaskTarget(targetName));
-        }
-        
-        // TaskActions class instantiation read from actions.txt
-        if (!File.Exists(actionsFile))
-        {
-            // create actions file with dummy data
-            File.Create(actionsFile).Close();
-            File.AppendAllText(actionsFile,
-                "clean" + Environment.NewLine +
-                "dust" + Environment.NewLine +
-                "wipe" + Environment.NewLine +
-                "sweep" + Environment.NewLine +
-                "wash" + Environment.NewLine
-                );
         }
 
         TaskActions = new List<TaskAction>();
@@ -66,25 +43,16 @@ public class DataManager
         DateTime? prevDate;
         foreach (var line in tasksFileContent)
         {
-            //var splitline = line.Split(";", StringSplitOptions.RemoveEmptyEntries);
-            var splitline = line.Split(";");
+            string[] split = line.Split(";");
             
-            var persistentAction = splitline[0];
-            var action = new TaskAction(persistentAction);
+            var action = new TaskAction(split[0]);
+            var target = new TaskTarget(split[1]);
+            var schedDate = DateTime.Parse(split[2]);
+            var frequency = int.Parse(split[3]);            
             
-            var persistentTarget = splitline[1];
-            var target = new TaskTarget(persistentTarget);
-            
-            var persistentSchedDate = splitline[2];
-            var schedDate = DateTime.Parse(persistentSchedDate);
-            
-            var persistentFrequency = splitline[3];
-            var frequency = int.Parse(persistentFrequency);
-            
-            var persistentPrevDate = splitline[4];
-            if (persistentPrevDate != "")
+            if (split[4] != "")
             {
-                prevDate = DateTime.Parse(persistentPrevDate);
+                prevDate = DateTime.Parse(split[4]);
             }
             else
             {
@@ -92,17 +60,24 @@ public class DataManager
             }
             
             AppTasks.Add(new AppTask(action, target, schedDate, frequency, prevDate));
-            
         }
-        
     }
 
+    public void BuildFileIfNull(string newFile, string dummyData)
+    {
+        if (!File.Exists(newFile))
+        {
+            File.Create(newFile).Close();
+            File.AppendAllText(newFile, dummyData);
+        }
+    }
+    
     public void SynchTargets()
     {
         File.Delete(targetsFile);
         foreach (var taskTarget in TaskTargets)
         {
-            File.AppendAllText(targetsFile, taskTarget.Name + Environment.NewLine);
+            File.AppendAllText(targetsFile, taskTarget.Name + nl);
         }
     }
 
@@ -123,7 +98,7 @@ public class DataManager
         File.Delete(actionsFile);
         foreach (var taskAction in TaskActions)
         {
-            File.AppendAllText(actionsFile, taskAction.Name + Environment.NewLine);
+            File.AppendAllText(actionsFile, taskAction.Name + nl);
         }
     }
 

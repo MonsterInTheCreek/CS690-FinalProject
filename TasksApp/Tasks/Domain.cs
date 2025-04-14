@@ -1,10 +1,10 @@
 namespace Tasks;
 
-public class TaskTarget
+public class TaskWord
 {
     public string Name { get; }
 
-    public TaskTarget(string name)
+    protected TaskWord(string name)
     {
         this.Name = name;
     }
@@ -15,20 +15,14 @@ public class TaskTarget
     }
 }
 
-public class TaskAction
+public class TaskTarget : TaskWord
 {
-    // this will eventually be associated with the ActionSupply class, but that is lower dev priority
-    public string Name { get; }
+    public TaskTarget(string name) : base(name) { }
+}
 
-    public TaskAction(string name)
-    {
-        this.Name = name;
-    }
-
-    public override string ToString()
-    {
-        return this.Name;
-    }
+public class TaskAction : TaskWord
+{
+    public TaskAction(string name) : base(name) { }
 }
 
 // ActionSupply class definition, pending, lower priority

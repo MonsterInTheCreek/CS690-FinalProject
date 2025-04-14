@@ -34,18 +34,46 @@ public class AppUI
                 }
             }
             
-            entryChoice = MakeChoice(new List<string> {"complete","tasks","targets","actions","supplies","exit"});
-            
-            if (entryChoice == "supplies")
+            entryChoice = MakeChoice(new List<string>
             {
-                Console.WriteLine(nl + "Not implemented yet");
-                Wait();
-            } else if (entryChoice == "tasks")
+                "Complete task","Review tasks","Review targets","Review actions","Review supplies","Exit"
+            });
+            
+            if (entryChoice == "Complete task")
             {
                 Console.Clear();
-                string mode = MakeChoice(new List<string> { "add", "list", "quit" });
+                int tasksCount = dataManager.AppTasks.Count;
+                for (int i = 0; i < tasksCount; i++)
+                {
+                    AppTask task = dataManager.AppTasks[i]; 
+                    Console.WriteLine(
+                        "[" + i + "]  " +
+                        task.TaskAction.Name + " " +
+                        task.TaskTarget.Name + " due " +
+                        task.SchedDate.ToString("MM/dd/yy")
+                    );
+                }
+
+                string iComplete = RequestInput("Which task did you complete?  Choose by number> ");
+                Console.WriteLine("Congrats!");
+                
+                List<string> tasksLines = File.ReadAllLines("tasks-current.txt").ToList();
+                tasksLines.RemoveAt(int.Parse(iComplete));
+                File.WriteAllLines("tasks-current.txt", tasksLines);
+                // Add back updated version of task with new scheduled date and previous date
+                AppTask oldTask = dataManager.AppTasks[int.Parse(iComplete)];
+                DataWriter dataWriter = new DataWriter("tasks-current.txt");
+                AppTask updatedTask = new AppTask(
+                    oldTask.TaskAction, oldTask.TaskTarget, today.AddDays(oldTask.Frequency), oldTask.Frequency, today
+                );
+                dataWriter.AppendData(updatedTask);
+                
+            } else if (entryChoice == "Review tasks")
+            {
+                Console.Clear();
+                string mode = MakeChoice(new List<string> { "Add task", "List tasks", "Quit" });
         
-                if (mode == "add")
+                if (mode == "Add task")
                 {
                     string addMore;
 
@@ -60,7 +88,7 @@ public class AppUI
 
                     } while (addMore != "no");
             
-                } else if (mode == "list")
+                } else if (mode == "List tasks")
                 {
                     Console.Clear();
                     foreach (AppTask task in dataManager.AppTasks)
@@ -74,7 +102,8 @@ public class AppUI
                     }
                     Wait();
                 }
-            } else if (entryChoice == "targets")
+                
+            } else if (entryChoice == "Review targets")
             {
                 Console.Clear();
                 Console.WriteLine("Targets:" + nl + "--------");
@@ -83,19 +112,20 @@ public class AppUI
                     Console.WriteLine(taskTarget);
                 }
                 
-                string targetChoice = MakeChoice(new List<string> { "add", "remove", "quit" });
-                if (targetChoice == "add")
+                string targetChoice = MakeChoice(new List<string> { "Add target", "Remove target", "Quit" });
+                if (targetChoice == "Add target")
                 {
                     string newTarget = RequestInput("What would you like to add? ");
                     dataManager.AddTarget(new TaskTarget(newTarget));
-                } else if (targetChoice == "remove")
+                } else if (targetChoice == "Remove target")
                 {
                     Console.WriteLine(nl + "Not implemented yet");
                     Wait();
                     // Proving difficult to get to work...
                 }
                 Console.Clear();
-            } else if (entryChoice == "actions")
+                
+            } else if (entryChoice == "Review actions")
             {
                 Console.Clear();
                 Console.WriteLine("Actions:" + nl + "--------");
@@ -104,50 +134,25 @@ public class AppUI
                     Console.WriteLine(taskAction);
                 }
                 
-                string actionChoice = MakeChoice(new List<string> { "add", "remove", "quit" });
-                if (actionChoice == "add")
+                string actionChoice = MakeChoice(new List<string> { "Add action", "Remove action", "Quit" });
+                if (actionChoice == "Add action")
                 {
                     string newAction = RequestInput("What would you like to add? ");
                     dataManager.AddAction(new TaskAction(newAction));
-                } else if (actionChoice == "remove")
+                } else if (actionChoice == "Remove action")
                 {
                     Console.WriteLine(nl + "Not implemented yet");
                     Wait();
                     // As above, haven't figured this out yet
                 }
                 Console.Clear();
-            } else if (entryChoice == "complete")
-            {
-                Console.Clear();
-                int tasksCount = dataManager.AppTasks.Count;
-                for (int i = 0; i < tasksCount; i++)
-                {
-                    AppTask task = dataManager.AppTasks[i]; 
-                    Console.WriteLine(
-                        "[" + i + "]  " +
-                        task.TaskAction.Name + " " +
-                        task.TaskTarget.Name + " due " +
-                        task.SchedDate.ToString("MM/dd/yy")
-                        );
-                }
-
-                string iComplete = RequestInput("Which task did you complete?  Choose by number> ");
-                Console.WriteLine("Congrats!");
                 
-                List<string> tasksLines = File.ReadAllLines("tasks-current.txt").ToList();
-                tasksLines.RemoveAt(int.Parse(iComplete));
-                File.WriteAllLines("tasks-current.txt", tasksLines);
-                // Add back updated version of task with new scheduled date and previous date
-                AppTask oldTask = dataManager.AppTasks[int.Parse(iComplete)];
-                DataWriter dataWriter = new DataWriter("tasks-current.txt");
-                AppTask updatedTask = new AppTask(
-                    oldTask.TaskAction, oldTask.TaskTarget, today.AddDays(oldTask.Frequency), oldTask.Frequency, today
-                    );
-                dataWriter.AppendData(updatedTask);
-
-
+            }  else if (entryChoice == "Review supplies")
+            {
+                Console.WriteLine(nl + "Not implemented yet");
+                Wait();
             }
-        } while (entryChoice != "exit");
+        } while (entryChoice != "Exit");
         
     }
     

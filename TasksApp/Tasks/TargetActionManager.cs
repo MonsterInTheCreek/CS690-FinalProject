@@ -1,18 +1,18 @@
 namespace Tasks;
 
-using System.IO;
+//using System.IO;
 
-public class DataManager
+public class TargetActionManager
 {
     private static string nl = Environment.NewLine;  // save space
     public List<TaskTarget> TaskTargets { get; set; }
     public List<TaskAction> TaskActions { get; set; }
-    public List<AppTask> AppTasks { get; set; } 
+    //public List<AppTask> AppTasks { get; set; } 
     
     string targetsFile = "targets.txt";
     string actionsFile = "actions.txt";
     
-    public DataManager()
+    public TargetActionManager()
     {
         BuildFileIfNull(targetsFile,
             "bathroom" + nl + "shelves" + nl + "counter" + nl + "floor" + nl + "dishes" + nl
@@ -36,30 +36,6 @@ public class DataManager
         foreach (string actionName in actionsFileData)
         {
             TaskActions.Add(new TaskAction(actionName));
-        }
-        
-        AppTasks = new List<AppTask>();
-        var tasksFileContent = File.ReadAllLines("tasks-current.txt");
-        DateTime? prevDate;
-        foreach (var line in tasksFileContent)
-        {
-            string[] split = line.Split(";");
-            
-            var action = new TaskAction(split[0]);
-            var target = new TaskTarget(split[1]);
-            var schedDate = DateTime.Parse(split[2]);
-            var frequency = int.Parse(split[3]);            
-            
-            if (split[4] != "")
-            {
-                prevDate = DateTime.Parse(split[4]);
-            }
-            else
-            {
-                prevDate = null;
-            }
-            
-            AppTasks.Add(new AppTask(action, target, schedDate, frequency, prevDate));
         }
     }
 

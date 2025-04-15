@@ -4,35 +4,18 @@ using Spectre.Console;
 
 public class AppUI
 {
-    private DataManager dataManager;
     private static string nl = Environment.NewLine;  // save space
-
-    public AppUI()
-    {
-        dataManager = new DataManager();
-    }
-    
     public void Show()
     {
         string entryChoice;
         
         do
         {
-            DataManager dataManager = new DataManager();
-            DateTime today = DateTime.Now;
-            Console.WriteLine("Today is " + DateToString(today));
+            TargetActionManager dataManager = new TargetActionManager();
+            TaskManager taskManager = new TaskManager();
 
-            List<AppTask> todayTasks = new List<AppTask>();
-            
-            foreach (AppTask task in dataManager.AppTasks)
-            {
-                if (task.SchedDate <= today.Date)
-                {
-                    Console.WriteLine(
-                        task.TaskAction + " " + task.TaskTarget + " is due today!"
-                    );
-                }
-            }
+            DateTime today = DateTime.Now;  // this is temporary, get rid of it after porting
+            taskManager.TodayRecap();
             
             entryChoice = MakeChoice(new List<string>
             {
@@ -42,10 +25,10 @@ public class AppUI
             if (entryChoice == "Complete task")
             {
                 Console.Clear();
-                int tasksCount = dataManager.AppTasks.Count;
+                int tasksCount = taskManager.AppTasks.Count;
                 for (int i = 0; i < tasksCount; i++)
                 {
-                    AppTask task = dataManager.AppTasks[i]; 
+                    AppTask task = taskManager.AppTasks[i]; 
                     Console.WriteLine(
                         "[" + i + "]  " +
                         task.TaskAction.Name + " " +
@@ -63,7 +46,7 @@ public class AppUI
                 tasksLines.RemoveAt(int.Parse(iComplete));
                 File.WriteAllLines("tasks-current.txt", tasksLines);
                 // Add back updated version of task with new scheduled date and previous date
-                AppTask oldTask = dataManager.AppTasks[int.Parse(iComplete)];
+                AppTask oldTask = taskManager.AppTasks[int.Parse(iComplete)];
                 DataWriter dataWriter = new DataWriter("tasks-current.txt");
                 AppTask updatedTask = new AppTask(
                     oldTask.TaskAction, oldTask.TaskTarget, today.AddDays(oldTask.Frequency), oldTask.Frequency, today
@@ -93,7 +76,7 @@ public class AppUI
                 } else if (mode == "List tasks")
                 {
                     Console.Clear();
-                    foreach (AppTask task in dataManager.AppTasks)
+                    foreach (AppTask task in taskManager.AppTasks)
                     {
                         Console.WriteLine(
                             "[" + task.TaskAction.Name + "]" + " " +
@@ -175,11 +158,6 @@ public class AppUI
     {
         Console.Write(message);
         return Console.ReadLine();
-    }
-
-    public static string DateToString(DateTime date)
-    {
-        return date.ToString("MM/dd/yy");
     }
 
     public static void Wait()

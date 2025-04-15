@@ -55,7 +55,9 @@ public class AppUI
                 }
 
                 string iComplete = RequestInput("Which task did you complete?  Choose by number> ");
-                Console.WriteLine("Congrats!");
+                Console.WriteLine("Congrats!");  
+                // improve by adding statement of what was completed, and when new task is next scheduled
+                Wait();
                 
                 List<string> tasksLines = File.ReadAllLines("tasks-current.txt").ToList();
                 tasksLines.RemoveAt(int.Parse(iComplete));
@@ -84,9 +86,9 @@ public class AppUI
                         DataWriter dataWriter = new DataWriter("tasks-current.txt");
                         dataWriter.AppendData(task);
                         
-                        addMore = MakeChoice(new List<string> { "yes", "no" });
-
-                    } while (addMore != "no");
+                        addMore = MakeChoice(new List<string> { "Add another task?", "Quit" });
+                        Console.Clear();
+                    } while (addMore != "Quit");
             
                 } else if (mode == "List tasks")
                 {

@@ -3,12 +3,13 @@ namespace Tasks;
 public class TaskManager
 {
     private static string nl = Environment.NewLine; // save space
+    private string tasksFile = "tasks-current.txt";
     public List<AppTask> AppTasks { get; set; }
 
     public TaskManager()
     {
         AppTasks = new List<AppTask>();
-        var tasksFileContent = File.ReadAllLines("tasks-current.txt");
+        var tasksFileContent = File.ReadAllLines(tasksFile);
         DateTime? prevDate;
         foreach (var line in tasksFileContent)
         {
@@ -46,5 +47,52 @@ public class TaskManager
                 );
             }
         }
+    }
+
+    public void SynchTasks()
+    {
+        File.Delete(tasksFile);
+        foreach (AppTask task in AppTasks)
+        {
+            string helperPrevDate;
+            if (task.PrevDate == null)
+            {
+                helperPrevDate = "";
+            }
+            else
+            {
+                helperPrevDate = task.PrevDate.Value.ToString("MM/dd/yy");
+            }
+
+            string taskSerialized = task.TaskAction.Name + ";" +
+                                    task.TaskTarget.Name + ";" +
+                                    task.SchedDate.ToString("MM/dd/yy") + ";" +
+                                    task.Frequency + ";" +
+                                    helperPrevDate + ";" + nl;
+            File.AppendAllText(tasksFile, taskSerialized);
+        }
+    }
+
+    public void AddTask(AppTask task)
+    {
+        AppTasks.Add(task);
+        SynchTasks();
+    }
+    
+    public static AppTask AskForTask()
+    {
+        TaskAction taskAction = new TaskAction(RequestInput("What task action? "));
+        TaskTarget taskTarget = new TaskTarget(RequestInput("Where will you perform this? "));
+        DateTime schedDate = DateTime.Parse(RequestInput("What day to schedule? (mm/dd/yy) "));
+        int frequency = int.Parse(RequestInput("What frequency? (in days) "));
+        DateTime? prevDate = null;
+        AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, prevDate);
+        return task;
+    }
+    
+    public static string RequestInput(string message)
+    {
+        Console.Write(message);
+        return Console.ReadLine();
     }
 }

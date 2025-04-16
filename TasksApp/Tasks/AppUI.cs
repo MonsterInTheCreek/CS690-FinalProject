@@ -64,10 +64,8 @@ public class AppUI
 
                     do
                     {
-                        AppTask task = AskForTask();
-
-                        DataWriter dataWriter = new DataWriter("tasks-current.txt");
-                        dataWriter.AppendData(task);
+                        AppTask task = TaskManager.AskForTask();
+                        taskManager.AddTask(task);
                         
                         addMore = MakeChoice(new List<string> { "Add another task?", "Quit" });
                         Console.Clear();
@@ -141,20 +139,7 @@ public class AppUI
         
     }
     
-    public static AppTask AskForTask()
-    {
-        // Desperately need validations here, but lower priority than just getting to work
-        TaskAction taskAction = new TaskAction(RequestInput("What task action? "));
-        TaskTarget taskTarget = new TaskTarget(RequestInput("Where will you perform this? "));
-        DateTime schedDate = DateTime.Parse(RequestInput("What day to schedule? (mm/dd/yy) "));
-        int frequency = int.Parse(RequestInput("What frequency? (in days) "));
-        DateTime? prevDate = null;
-        AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, prevDate);
-        return task;
-    }
-    
     public static string RequestInput(string message)
-    // need validations
     {
         Console.Write(message);
         return Console.ReadLine();

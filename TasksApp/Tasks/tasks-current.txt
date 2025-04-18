@@ -3,5 +3,3 @@ clean;sink;04/13/25;3;04/10/25;
 clean;bathroom;04/21/25;7;04/14/25;
 wipe;counter;04/15/25;7;;
 wash;car;04/29/25;14;04/15/25;
-wash;clothes;04/15/25;7;;
-toss;trash;04/20/25;3;;

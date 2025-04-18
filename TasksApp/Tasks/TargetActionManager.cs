@@ -7,7 +7,6 @@ public class TargetActionManager
     private static string nl = Environment.NewLine;  // save space
     public List<TaskTarget> TaskTargets { get; set; }
     public List<TaskAction> TaskActions { get; set; }
-    //public List<AppTask> AppTasks { get; set; } 
     
     string targetsFile = "targets.txt";
     string actionsFile = "actions.txt";

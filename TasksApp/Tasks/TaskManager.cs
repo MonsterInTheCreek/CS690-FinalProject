@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 namespace Tasks;
 
 public class TaskManager
@@ -10,7 +12,6 @@ public class TaskManager
     {
         AppTasks = new List<AppTask>();
         var tasksFileContent = File.ReadAllLines(tasksFile);
-        DateTime? prevDate;
         foreach (var line in tasksFileContent)
         {
             string[] split = line.Split(";");
@@ -20,6 +21,7 @@ public class TaskManager
             var schedDate = DateTime.Parse(split[2]);
             var frequency = int.Parse(split[3]);
 
+            DateTime? prevDate;
             if (split[4] != "")
             {
                 prevDate = DateTime.Parse(split[4]);
@@ -77,6 +79,28 @@ public class TaskManager
     {
         AppTasks.Add(task);
         SynchTasks();
+    }
+
+    public void ListTasks()
+    {
+        var table = new Table();
+        table.AddColumn("[red]Action[/]");
+        table.AddColumn("[red]Target[/]");
+        table.AddColumn("[red]Scheduled Date[/]");
+        table.AddColumn("[red]Frequency (in days)[/]");
+        foreach (AppTask task in AppTasks)
+        {
+            table.AddRow(
+                task.TaskAction.Name,
+                task.TaskTarget.Name,
+                task.SchedDate.ToString("MM/dd/yy"),
+                task.Frequency.ToString()
+            );
+        }
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine("...Press any key...");
+        Console.ReadKey();
     }
     
     public static AppTask AskForTask()

@@ -11,7 +11,7 @@ public class AppUI
         
         do
         {
-            TargetActionManager dataManager = new TargetActionManager();
+            TargetActionManager targetActionManager = new TargetActionManager();
             TaskManager taskManager = new TaskManager();
 
             DateTime today = DateTime.Now;  // this is temporary, get rid of it after porting
@@ -60,37 +60,20 @@ public class AppUI
         
                 if (mode == "Add task")
                 {
-                    string addMore;
+                    AppTask task = TaskManager.AskForTask();
+                    taskManager.AddTask(task);
 
-                    do
-                    {
-                        AppTask task = TaskManager.AskForTask();
-                        taskManager.AddTask(task);
-                        
-                        addMore = MakeChoice(new List<string> { "Add another task?", "Quit" });
-                        Console.Clear();
-                    } while (addMore != "Quit");
-            
                 } else if (mode == "List tasks")
                 {
                     Console.Clear();
-                    foreach (AppTask task in taskManager.AppTasks)
-                    {
-                        Console.WriteLine(
-                            "[" + task.TaskAction.Name + "]" + " " +
-                            "[" + task.TaskTarget.Name + "]" + " scheduled for " +
-                            "[" + task.SchedDate.ToString("MM/dd/yy") + "]" + ", repeats every " +
-                            "[" + task.Frequency + "]" + " days."
-                        );
-                    }
-                    Wait();
+                    taskManager.ListTasks();
                 }
                 
             } else if (entryChoice == "Review targets")
             {
                 Console.Clear();
                 Console.WriteLine("Targets:" + nl + "--------");
-                foreach (TaskTarget taskTarget in dataManager.TaskTargets)
+                foreach (TaskTarget taskTarget in targetActionManager.TaskTargets)
                 {
                     Console.WriteLine(taskTarget);
                 }
@@ -99,7 +82,7 @@ public class AppUI
                 if (targetChoice == "Add target")
                 {
                     string newTarget = RequestInput("What would you like to add? ");
-                    dataManager.AddTarget(new TaskTarget(newTarget));
+                    targetActionManager.AddTarget(new TaskTarget(newTarget));
                 } else if (targetChoice == "Remove target")
                 {
                     Console.WriteLine(nl + "Not implemented yet");
@@ -112,7 +95,7 @@ public class AppUI
             {
                 Console.Clear();
                 Console.WriteLine("Actions:" + nl + "--------");
-                foreach (TaskAction taskAction in dataManager.TaskActions)
+                foreach (TaskAction taskAction in targetActionManager.TaskActions)
                 {
                     Console.WriteLine(taskAction);
                 }
@@ -121,12 +104,11 @@ public class AppUI
                 if (actionChoice == "Add action")
                 {
                     string newAction = RequestInput("What would you like to add? ");
-                    dataManager.AddAction(new TaskAction(newAction));
+                    targetActionManager.AddAction(new TaskAction(newAction));
                 } else if (actionChoice == "Remove action")
                 {
                     Console.WriteLine(nl + "Not implemented yet");
                     Wait();
-                    // As above, haven't figured this out yet
                 }
                 Console.Clear();
                 

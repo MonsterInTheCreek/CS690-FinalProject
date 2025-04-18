@@ -14,50 +14,18 @@ public class AppUI
             TargetManager targetManager = new TargetManager();
             ActionManager actionManager = new ActionManager();
             TaskManager taskManager = new TaskManager();
-
-            DateTime today = DateTime.Now;  // this is temporary, get rid of it after porting
+            
             taskManager.TodayRecap();
             
             entryChoice = MakeChoice(new List<string>
             {
-                "Complete task","Review tasks","Review targets","Review actions","Review supplies","Exit"
+                "Review tasks","Review targets","Review actions","Review supplies","Exit"
             });
             
-            if (entryChoice == "Complete task")
+            if (entryChoice == "Review tasks")
             {
                 Console.Clear();
-                int tasksCount = taskManager.AppTasks.Count;
-                for (int i = 0; i < tasksCount; i++)
-                {
-                    AppTask task = taskManager.AppTasks[i]; 
-                    Console.WriteLine(
-                        "[" + i + "]  " +
-                        task.TaskAction.Name + " " +
-                        task.TaskTarget.Name + " due " +
-                        task.SchedDate.ToString("MM/dd/yy")
-                    );
-                }
-
-                string iComplete = RequestInput("Which task did you complete?  Choose by number> ");
-                Console.WriteLine("Congrats!");  
-                // improve by adding statement of what was completed, and when new task is next scheduled
-                Wait();
-                
-                List<string> tasksLines = File.ReadAllLines("tasks-current.txt").ToList();
-                tasksLines.RemoveAt(int.Parse(iComplete));
-                File.WriteAllLines("tasks-current.txt", tasksLines);
-                // Add back updated version of task with new scheduled date and previous date
-                AppTask oldTask = taskManager.AppTasks[int.Parse(iComplete)];
-                DataWriter dataWriter = new DataWriter("tasks-current.txt");
-                AppTask updatedTask = new AppTask(
-                    oldTask.TaskAction, oldTask.TaskTarget, today.AddDays(oldTask.Frequency), oldTask.Frequency, today
-                );
-                dataWriter.AppendData(updatedTask);
-                
-            } else if (entryChoice == "Review tasks")
-            {
-                Console.Clear();
-                string mode = MakeChoice(new List<string> { "Add task", "List tasks", "Quit" });
+                string mode = MakeChoice(new List<string> { "Add task", "List tasks", "Complete task", "Quit" });
         
                 if (mode == "Add task")
                 {
@@ -68,6 +36,13 @@ public class AppUI
                 {
                     Console.Clear();
                     taskManager.ListTasks();
+                    // pause hard-coded into ListTasks, see note, don't use Wait()
+                    
+                } else if (mode == "Complete task")
+                {
+                    Console.Clear();
+                    taskManager.CompleteTask();
+                    Wait();
                 }
                 
             } else if (entryChoice == "Review targets")

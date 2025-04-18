@@ -6,6 +6,7 @@ public class TaskManager
 {
     private static string nl = Environment.NewLine; // save space
     private string tasksFile = "tasks-current.txt";
+    private DateTime today = DateTime.Now; 
     public List<AppTask> AppTasks { get; set; }
 
     public TaskManager()
@@ -37,12 +38,11 @@ public class TaskManager
 
     public void TodayRecap()
     {
-        string today = DateTime.Now.ToString("MM/dd/yy");
-        Console.WriteLine("Today is " + today);
+        Console.WriteLine("Today is " + today.ToString("MM/dd/yy"));
             
         foreach (AppTask task in AppTasks)
         {
-            if (task.SchedDate <= DateTime.Parse(today).Date)
+            if (task.SchedDate <= today.Date)
             {
                 Console.WriteLine(
                     task.TaskAction + " " + task.TaskTarget + " is due today!"
@@ -99,8 +99,39 @@ public class TaskManager
         }
 
         AnsiConsole.Write(table);
-        AnsiConsole.WriteLine("...Press any key...");
+        AnsiConsole.WriteLine("...Press any key...");   // renders wrong if use Wait()
         Console.ReadKey();
+        Console.Clear();
+    }
+
+    public void CompleteTask()
+    {
+        int tasksCount = AppTasks.Count;
+        for (int i = 0; i < tasksCount; i++)
+        {
+            AppTask task = AppTasks[i]; 
+            Console.WriteLine(
+                "[" + i + "]  " +
+                task.TaskAction.Name + " " +
+                task.TaskTarget.Name + " due " +
+                task.SchedDate.ToString("MM/dd/yy")
+            );
+        }
+        int iComplete = int.Parse(RequestInput("Which task did you complete?  Choose by number> "));
+        AppTask oldTask = AppTasks[iComplete];
+        
+        AppTask newTask = new AppTask(
+            oldTask.TaskAction,
+            oldTask.TaskTarget,
+            today.AddDays(oldTask.Frequency),  // new schedDate = today + frequency
+            oldTask.Frequency,
+            today);
+        AppTasks[iComplete] = newTask;
+        SyncTasks();
+        
+        Console.WriteLine("");
+        Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
+        Console.WriteLine($"This task is now scheduled for {newTask.SchedDate.ToString("MM/dd/yy")}");
     }
     
     public static AppTask AskForTask()
@@ -118,5 +149,13 @@ public class TaskManager
     {
         Console.Write(message);
         return Console.ReadLine();
+    }
+    
+    public static void Wait()
+    {
+        Console.WriteLine("");
+        Console.WriteLine("...Press any key...");
+        Console.ReadKey(true);
+        Console.Clear();
     }
 }

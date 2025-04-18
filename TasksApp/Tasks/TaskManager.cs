@@ -117,7 +117,7 @@ public class TaskManager
                 task.SchedDate.ToString("MM/dd/yy")
             );
         }
-        int iComplete = int.Parse(RequestInput("Which task did you complete?  Choose by number> "));
+        int iComplete = int.Parse(Helpers.RequestInput("Which task did you complete?  Choose by number> "));
         AppTask oldTask = AppTasks[iComplete];
         
         AppTask newTask = new AppTask(
@@ -136,26 +136,12 @@ public class TaskManager
     
     public static AppTask AskForTask()
     {
-        TaskAction taskAction = new TaskAction(RequestInput("What task action? "));
-        TaskTarget taskTarget = new TaskTarget(RequestInput("Where will you perform this? "));
-        DateTime schedDate = DateTime.Parse(RequestInput("What day to schedule? (mm/dd/yy) "));
-        int frequency = int.Parse(RequestInput("What frequency? (in days) "));
+        TaskAction taskAction = new TaskAction(Helpers.RequestInput("What task action? "));
+        TaskTarget taskTarget = new TaskTarget(Helpers.RequestInput("Where will you perform this? "));
+        DateTime schedDate = DateTime.Parse(Helpers.RequestInput("What day to schedule? (mm/dd/yy) "));
+        int frequency = int.Parse(Helpers.RequestInput("What frequency? (in days) "));
         DateTime? prevDate = null;
         AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, prevDate);
         return task;
-    }
-    
-    public static string RequestInput(string message)
-    {
-        Console.Write(message);
-        return Console.ReadLine();
-    }
-    
-    public static void Wait()
-    {
-        Console.WriteLine("");
-        Console.WriteLine("...Press any key...");
-        Console.ReadKey(true);
-        Console.Clear();
     }
 }

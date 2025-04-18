@@ -51,4 +51,14 @@ public class TargetManager
          TaskTargets.Remove(taskTarget);
          SyncTargets();
      }
+
+     public void DisplayTargets()
+     {
+         Console.Clear();
+         Console.WriteLine("Targets:" + nl + "--------");
+         foreach (TaskTarget taskTarget in TaskTargets)
+         {
+             Console.WriteLine(taskTarget);
+         }
+     }
 }

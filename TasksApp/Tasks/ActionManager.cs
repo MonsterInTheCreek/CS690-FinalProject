@@ -51,4 +51,14 @@ public class ActionManager
          TaskActions.Remove(taskAction);
          SyncActions();
      }
+
+     public void DisplayActions()
+     {
+         Console.Clear();
+         Console.WriteLine("Actions:" + nl + "--------");
+         foreach (TaskAction taskAction in TaskActions)
+         {
+             Console.WriteLine(taskAction);
+         }
+     }
 }

@@ -11,7 +11,8 @@ public class AppUI
         
         do
         {
-            TargetActionManager targetActionManager = new TargetActionManager();
+            TargetManager targetManager = new TargetManager();
+            ActionManager actionManager = new ActionManager();
             TaskManager taskManager = new TaskManager();
 
             DateTime today = DateTime.Now;  // this is temporary, get rid of it after porting
@@ -73,7 +74,7 @@ public class AppUI
             {
                 Console.Clear();
                 Console.WriteLine("Targets:" + nl + "--------");
-                foreach (TaskTarget taskTarget in targetActionManager.TaskTargets)
+                foreach (TaskTarget taskTarget in targetManager.TaskTargets)
                 {
                     Console.WriteLine(taskTarget);
                 }
@@ -82,7 +83,7 @@ public class AppUI
                 if (targetChoice == "Add target")
                 {
                     string newTarget = RequestInput("What would you like to add? ");
-                    targetActionManager.AddTarget(new TaskTarget(newTarget));
+                    targetManager.AddTarget(new TaskTarget(newTarget));
                 } else if (targetChoice == "Remove target")
                 {
                     Console.WriteLine(nl + "Not implemented yet");
@@ -95,7 +96,7 @@ public class AppUI
             {
                 Console.Clear();
                 Console.WriteLine("Actions:" + nl + "--------");
-                foreach (TaskAction taskAction in targetActionManager.TaskActions)
+                foreach (TaskAction taskAction in actionManager.TaskActions)
                 {
                     Console.WriteLine(taskAction);
                 }
@@ -104,7 +105,7 @@ public class AppUI
                 if (actionChoice == "Add action")
                 {
                     string newAction = RequestInput("What would you like to add? ");
-                    targetActionManager.AddAction(new TaskAction(newAction));
+                    actionManager.AddAction(new TaskAction(newAction));
                 } else if (actionChoice == "Remove action")
                 {
                     Console.WriteLine(nl + "Not implemented yet");

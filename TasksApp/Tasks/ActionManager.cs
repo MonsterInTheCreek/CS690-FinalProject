@@ -31,7 +31,7 @@ public class ActionManager
          }
      }
      
-     public void SynchActions()
+     public void SyncActions()
      {
          File.Delete(actionsFile);
          foreach (var taskAction in TaskActions)
@@ -43,12 +43,12 @@ public class ActionManager
      public void AddAction(TaskAction taskAction)
      {
          TaskActions.Add(taskAction);
-         SynchActions();
+         SyncActions();
      }
 
      public void RemoveAction(TaskAction taskAction)
      {
          TaskActions.Remove(taskAction);
-         SynchActions();
+         SyncActions();
      }
 }

@@ -1,6 +1,6 @@
-using Spectre.Console;
-
 namespace Tasks;
+
+using Spectre.Console;
 
 public class TaskManager
 {
@@ -51,7 +51,7 @@ public class TaskManager
         }
     }
 
-    public void SynchTasks()
+    public void SyncTasks()
     {
         File.Delete(tasksFile);
         foreach (AppTask task in AppTasks)
@@ -78,7 +78,7 @@ public class TaskManager
     public void AddTask(AppTask task)
     {
         AppTasks.Add(task);
-        SynchTasks();
+        SyncTasks();
     }
 
     public void ListTasks()

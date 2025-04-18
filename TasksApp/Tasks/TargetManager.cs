@@ -31,7 +31,7 @@ public class TargetManager
          }
      }
      
-     public void SynchTargets()
+     public void SyncTargets()
      {
          File.Delete(targetsFile);
          foreach (var taskTarget in TaskTargets)
@@ -43,12 +43,12 @@ public class TargetManager
      public void AddTarget(TaskTarget taskTarget)
      {
          TaskTargets.Add(taskTarget);
-         SynchTargets();
+         SyncTargets();
      }
 
      public void RemoveTarget(TaskTarget taskTarget)
      {
          TaskTargets.Remove(taskTarget);
-         SynchTargets();
+         SyncTargets();
      }
 }

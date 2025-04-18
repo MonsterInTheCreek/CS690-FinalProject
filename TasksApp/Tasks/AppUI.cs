@@ -4,35 +4,19 @@ using Spectre.Console;
 
 public class AppUI
 {
-    private DataManager dataManager;
     private static string nl = Environment.NewLine;  // save space
-
-    public AppUI()
-    {
-        dataManager = new DataManager();
-    }
-    
     public void Show()
     {
         string entryChoice;
         
         do
         {
-            DataManager dataManager = new DataManager();
-            DateTime today = DateTime.Now;
-            Console.WriteLine("Today is " + DateToString(today));
+            TargetManager targetManager = new TargetManager();
+            ActionManager actionManager = new ActionManager();
+            TaskManager taskManager = new TaskManager();
 
-            List<AppTask> todayTasks = new List<AppTask>();
-            
-            foreach (AppTask task in dataManager.AppTasks)
-            {
-                if (task.SchedDate <= today.Date)
-                {
-                    Console.WriteLine(
-                        task.TaskAction + " " + task.TaskTarget + " is due today!"
-                    );
-                }
-            }
+            DateTime today = DateTime.Now;  // this is temporary, get rid of it after porting
+            taskManager.TodayRecap();
             
             entryChoice = MakeChoice(new List<string>
             {
@@ -42,10 +26,10 @@ public class AppUI
             if (entryChoice == "Complete task")
             {
                 Console.Clear();
-                int tasksCount = dataManager.AppTasks.Count;
+                int tasksCount = taskManager.AppTasks.Count;
                 for (int i = 0; i < tasksCount; i++)
                 {
-                    AppTask task = dataManager.AppTasks[i]; 
+                    AppTask task = taskManager.AppTasks[i]; 
                     Console.WriteLine(
                         "[" + i + "]  " +
                         task.TaskAction.Name + " " +
@@ -55,13 +39,15 @@ public class AppUI
                 }
 
                 string iComplete = RequestInput("Which task did you complete?  Choose by number> ");
-                Console.WriteLine("Congrats!");
+                Console.WriteLine("Congrats!");  
+                // improve by adding statement of what was completed, and when new task is next scheduled
+                Wait();
                 
                 List<string> tasksLines = File.ReadAllLines("tasks-current.txt").ToList();
                 tasksLines.RemoveAt(int.Parse(iComplete));
                 File.WriteAllLines("tasks-current.txt", tasksLines);
                 // Add back updated version of task with new scheduled date and previous date
-                AppTask oldTask = dataManager.AppTasks[int.Parse(iComplete)];
+                AppTask oldTask = taskManager.AppTasks[int.Parse(iComplete)];
                 DataWriter dataWriter = new DataWriter("tasks-current.txt");
                 AppTask updatedTask = new AppTask(
                     oldTask.TaskAction, oldTask.TaskTarget, today.AddDays(oldTask.Frequency), oldTask.Frequency, today
@@ -75,39 +61,20 @@ public class AppUI
         
                 if (mode == "Add task")
                 {
-                    string addMore;
+                    AppTask task = TaskManager.AskForTask();
+                    taskManager.AddTask(task);
 
-                    do
-                    {
-                        AppTask task = AskForTask();
-
-                        DataWriter dataWriter = new DataWriter("tasks-current.txt");
-                        dataWriter.AppendData(task);
-                        
-                        addMore = MakeChoice(new List<string> { "yes", "no" });
-
-                    } while (addMore != "no");
-            
                 } else if (mode == "List tasks")
                 {
                     Console.Clear();
-                    foreach (AppTask task in dataManager.AppTasks)
-                    {
-                        Console.WriteLine(
-                            "[" + task.TaskAction.Name + "]" + " " +
-                            "[" + task.TaskTarget.Name + "]" + " scheduled for " +
-                            "[" + task.SchedDate.ToString("MM/dd/yy") + "]" + ", repeats every " +
-                            "[" + task.Frequency + "]" + " days."
-                        );
-                    }
-                    Wait();
+                    taskManager.ListTasks();
                 }
                 
             } else if (entryChoice == "Review targets")
             {
                 Console.Clear();
                 Console.WriteLine("Targets:" + nl + "--------");
-                foreach (TaskTarget taskTarget in dataManager.TaskTargets)
+                foreach (TaskTarget taskTarget in targetManager.TaskTargets)
                 {
                     Console.WriteLine(taskTarget);
                 }
@@ -116,7 +83,7 @@ public class AppUI
                 if (targetChoice == "Add target")
                 {
                     string newTarget = RequestInput("What would you like to add? ");
-                    dataManager.AddTarget(new TaskTarget(newTarget));
+                    targetManager.AddTarget(new TaskTarget(newTarget));
                 } else if (targetChoice == "Remove target")
                 {
                     Console.WriteLine(nl + "Not implemented yet");
@@ -129,7 +96,7 @@ public class AppUI
             {
                 Console.Clear();
                 Console.WriteLine("Actions:" + nl + "--------");
-                foreach (TaskAction taskAction in dataManager.TaskActions)
+                foreach (TaskAction taskAction in actionManager.TaskActions)
                 {
                     Console.WriteLine(taskAction);
                 }
@@ -138,12 +105,11 @@ public class AppUI
                 if (actionChoice == "Add action")
                 {
                     string newAction = RequestInput("What would you like to add? ");
-                    dataManager.AddAction(new TaskAction(newAction));
+                    actionManager.AddAction(new TaskAction(newAction));
                 } else if (actionChoice == "Remove action")
                 {
                     Console.WriteLine(nl + "Not implemented yet");
                     Wait();
-                    // As above, haven't figured this out yet
                 }
                 Console.Clear();
                 
@@ -156,28 +122,10 @@ public class AppUI
         
     }
     
-    public static AppTask AskForTask()
-    {
-        // Desperately need validations here, but lower priority than just getting to work
-        TaskAction taskAction = new TaskAction(RequestInput("What task action? "));
-        TaskTarget taskTarget = new TaskTarget(RequestInput("Where will you perform this? "));
-        DateTime schedDate = DateTime.Parse(RequestInput("What day to schedule? (mm/dd/yy) "));
-        int frequency = int.Parse(RequestInput("What frequency? (in days) "));
-        DateTime? prevDate = null;
-        AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, prevDate);
-        return task;
-    }
-    
     public static string RequestInput(string message)
-    // need validations
     {
         Console.Write(message);
         return Console.ReadLine();
-    }
-
-    public static string DateToString(DateTime date)
-    {
-        return date.ToString("MM/dd/yy");
     }
 
     public static void Wait()

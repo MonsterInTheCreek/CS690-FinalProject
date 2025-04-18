@@ -14,7 +14,7 @@ class Program
     static void Version()
     {
         Console.Clear();
-        Console.WriteLine("Version 1.0.0 - Alpha Release");
+        Console.WriteLine("Version 1.0.1 - Alpha Release");
         Console.WriteLine("Known current limitations:");
         Console.WriteLine("--------------------------");
         Console.WriteLine("Target/Action - not used internally for new task creation");

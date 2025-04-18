@@ -1,10 +1,10 @@
 namespace Tasks;
 
-public class TaskWord
+public class TaskElement
 {
     public string Name { get; }
 
-    protected TaskWord(string name)
+    protected TaskElement(string name)
     {
         this.Name = name;
     }
@@ -15,12 +15,12 @@ public class TaskWord
     }
 }
 
-public class TaskTarget : TaskWord
+public class TaskTarget : TaskElement
 {
     public TaskTarget(string name) : base(name) { }
 }
 
-public class TaskAction : TaskWord
+public class TaskAction : TaskElement
 {
     public TaskAction(string name) : base(name) { }
 }

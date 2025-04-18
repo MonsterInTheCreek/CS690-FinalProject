@@ -2,7 +2,7 @@ namespace Tasks;
 
 public class AppUI
 {
-    private static string nl = Environment.NewLine;  // save space
+    private readonly string _nl = Environment.NewLine;  // save space
     public void Show()
     {
         string entryChoice;
@@ -56,9 +56,7 @@ public class AppUI
                     
                 } else if (targetChoice == "Remove target")
                 {
-                    Console.WriteLine(nl + "Not implemented yet");
-                    Helpers.Wait();
-                    // Proving difficult to get to work...
+                    targetManager.RemoveTarget();
                 }
                 Console.Clear();
                 
@@ -75,14 +73,13 @@ public class AppUI
                     
                 } else if (actionChoice == "Remove action")
                 {
-                    Console.WriteLine(nl + "Not implemented yet");
-                    Helpers.Wait();
+                    actionManager.RemoveAction();
                 }
                 Console.Clear();
                 
             }  else if (entryChoice == "Review supplies")
             {
-                Console.WriteLine(nl + "Not implemented yet");
+                Console.WriteLine(_nl + "Not implemented yet");
                 Helpers.Wait();
             }
         } while (entryChoice != "Exit");

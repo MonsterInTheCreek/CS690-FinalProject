@@ -1,5 +1,5 @@
 clean
 dust
 wipe
-sweep
 wash
+sweep

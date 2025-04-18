@@ -4,15 +4,15 @@ using Spectre.Console;
 
 public class TaskManager
 {
-    private static string nl = Environment.NewLine; // save space
-    private string tasksFile = "tasks-current.txt";
-    private DateTime today = DateTime.Now; 
-    public List<AppTask> AppTasks { get; set; }
+    private readonly string _nl = Environment.NewLine; // save space
+    private readonly string _tasksFile = "tasks-current.txt";
+    private readonly DateTime _today = DateTime.Now; 
+    private List<AppTask> AppTasks { get; set; }
 
     public TaskManager()
     {
         AppTasks = new List<AppTask>();
-        var tasksFileContent = File.ReadAllLines(tasksFile);
+        var tasksFileContent = File.ReadAllLines(_tasksFile);
         foreach (var line in tasksFileContent)
         {
             string[] split = line.Split(";");
@@ -38,11 +38,11 @@ public class TaskManager
 
     public void TodayRecap()
     {
-        Console.WriteLine("Today is " + today.ToString("MM/dd/yy"));
+        Console.WriteLine("Today is " + _today.ToString("MM/dd/yy"));
             
         foreach (AppTask task in AppTasks)
         {
-            if (task.SchedDate <= today.Date)
+            if (task.ScheduleDate <= _today.Date)
             {
                 Console.WriteLine(
                     task.TaskAction + " " + task.TaskTarget + " is due today!"
@@ -51,9 +51,9 @@ public class TaskManager
         }
     }
 
-    public void SyncTasks()
+    private void SyncTasks()
     {
-        File.Delete(tasksFile);
+        File.Delete(_tasksFile);
         foreach (AppTask task in AppTasks)
         {
             string helperPrevDate;
@@ -68,10 +68,10 @@ public class TaskManager
 
             string taskSerialized = task.TaskAction.Name + ";" +
                                     task.TaskTarget.Name + ";" +
-                                    task.SchedDate.ToString("MM/dd/yy") + ";" +
+                                    task.ScheduleDate.ToString("MM/dd/yy") + ";" +
                                     task.Frequency + ";" +
-                                    helperPrevDate + ";" + nl;
-            File.AppendAllText(tasksFile, taskSerialized);
+                                    helperPrevDate + ";" + _nl;
+            File.AppendAllText(_tasksFile, taskSerialized);
         }
     }
 
@@ -93,7 +93,7 @@ public class TaskManager
             table.AddRow(
                 task.TaskAction.Name,
                 task.TaskTarget.Name,
-                task.SchedDate.ToString("MM/dd/yy"),
+                task.ScheduleDate.ToString("MM/dd/yy"),
                 task.Frequency.ToString()
             );
         }
@@ -114,34 +114,34 @@ public class TaskManager
                 "[" + i + "]  " +
                 task.TaskAction.Name + " " +
                 task.TaskTarget.Name + " due " +
-                task.SchedDate.ToString("MM/dd/yy")
+                task.ScheduleDate.ToString("MM/dd/yy")
             );
         }
         int iComplete = int.Parse(Helpers.RequestInput("Which task did you complete?  Choose by number> "));
         AppTask oldTask = AppTasks[iComplete];
         
         AppTask newTask = new AppTask(
-            oldTask.TaskAction,
-            oldTask.TaskTarget,
-            today.AddDays(oldTask.Frequency),  // new schedDate = today + frequency
-            oldTask.Frequency,
-            today);
+            oldTask.TaskAction,                             // maintain current
+            oldTask.TaskTarget,                             // maintain current
+            _today.AddDays(oldTask.Frequency),     // new scheduleDate = today + frequency
+            oldTask.Frequency,                              // maintain current
+            _today);                                        // new prevDate = today
         AppTasks[iComplete] = newTask;
         SyncTasks();
         
         Console.WriteLine("");
         Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
-        Console.WriteLine($"This task is now scheduled for {newTask.SchedDate.ToString("MM/dd/yy")}");
+        Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
     }
     
     public static AppTask AskForTask()
     {
         TaskAction taskAction = new TaskAction(Helpers.RequestInput("What task action? "));
         TaskTarget taskTarget = new TaskTarget(Helpers.RequestInput("Where will you perform this? "));
-        DateTime schedDate = DateTime.Parse(Helpers.RequestInput("What day to schedule? (mm/dd/yy) "));
+        DateTime scheduleDate = DateTime.Parse(Helpers.RequestInput("What day to schedule? (mm/dd/yy) "));
         int frequency = int.Parse(Helpers.RequestInput("What frequency? (in days) "));
         DateTime? prevDate = null;
-        AppTask task = new AppTask (taskAction, taskTarget, schedDate, frequency, prevDate);
+        AppTask task = new AppTask (taskAction, taskTarget, scheduleDate, frequency, prevDate);
         return task;
     }
 }

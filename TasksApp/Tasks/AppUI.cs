@@ -38,9 +38,7 @@ public class AppUI
 
                 } else if (mode == "Remove task")
                 {
-
-                    Console.WriteLine("Not ready yet");
-
+                    taskManager.RemoveTask();
                 } else if (mode == "Complete task")
                 {
                     Console.Clear();

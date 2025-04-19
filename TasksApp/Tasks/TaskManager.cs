@@ -118,18 +118,7 @@ public class TaskManager
 
     public void CompleteTask()
     {
-        int tasksCount = AppTasks.Count;
-        for (int i = 0; i < tasksCount; i++)
-        {
-            AppTask task = AppTasks[i]; 
-            Console.WriteLine(
-                "[" + i + "]  " +
-                task.TaskAction.Name + " " +
-                task.TaskTarget.Name + " due " +
-                task.ScheduleDate.ToString("MM/dd/yy")
-            );
-        }
-        int iComplete = int.Parse(Helpers.RequestInput("Which task did you complete?  Choose by number> "));
+        int iComplete = ChooseTask();
         AppTask oldTask = AppTasks[iComplete];
         
         AppTask newTask = new AppTask(
@@ -144,6 +133,13 @@ public class TaskManager
         Console.WriteLine("");
         Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
         Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
+    }
+
+    public void RemoveTask()
+    {
+        int iRemove = ChooseTask();
+        AppTasks.RemoveAt(iRemove);
+        SyncTasks();
     }
     
     public static AppTask AskForTask()
@@ -165,5 +161,22 @@ public class TaskManager
         DateTime? prevDate = null;
         AppTask task = new AppTask (taskAction, taskTarget, scheduleDate, frequency, prevDate);
         return task;
+    }
+
+    public int ChooseTask()
+    {
+        List<string> mergedTasks = new List<string>();
+        // enumerate the list and return the index number
+        for (int i = 0; i < AppTasks.Count; i++)
+        {
+            mergedTasks.Add($"{i}) " + 
+            $"{AppTasks[i].TaskAction.Name} " + 
+            $"{AppTasks[i].TaskTarget.Name} due " +
+            $"{AppTasks[i].ScheduleDate.ToString("MM/dd/yy")}"
+            );
+        }
+        string userTaskChoice = Helpers.MakeChoice(mergedTasks);
+        string index = userTaskChoice.Split(")")[0];
+        return int.Parse(index);
     }
 }

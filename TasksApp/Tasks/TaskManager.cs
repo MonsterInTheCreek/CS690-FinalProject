@@ -136,8 +136,18 @@ public class TaskManager
     
     public static AppTask AskForTask()
     {
-        TaskAction taskAction = new TaskAction(Helpers.RequestInput("What task action? "));
-        TaskTarget taskTarget = new TaskTarget(Helpers.RequestInput("Where will you perform this? "));
+        ActionManager actions = new ActionManager();
+        TargetManager targets = new TargetManager();
+        List<string> actionNames = actions.TaskActions.Select(yada => yada.Name).ToList();
+        List<string> targetNames = targets.TaskTargets.Select(yada => yada.Name).ToList();
+        
+        Console.Clear();
+        Console.WriteLine("What task action?");
+        TaskAction taskAction = new TaskAction(Helpers.MakeChoice(actionNames));
+        Console.Clear();
+        Console.WriteLine("Where will you perform this?");
+        TaskTarget taskTarget = new TaskTarget(Helpers.MakeChoice(targetNames));
+
         DateTime scheduleDate = DateTime.Parse(Helpers.RequestInput("What day to schedule? (mm/dd/yy) "));
         int frequency = int.Parse(Helpers.RequestInput("What frequency? (in days) "));
         DateTime? prevDate = null;

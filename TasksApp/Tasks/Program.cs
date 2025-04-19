@@ -16,7 +16,6 @@ class Program
         Console.WriteLine("Known current limitations:");
         Console.WriteLine("--------------------------");
         Console.WriteLine("Target/Action - not used internally for new task creation");
-        Console.WriteLine("Target/Action - cannot remove items");
         Console.WriteLine("Low priority Supplies functionality not implemented at all");
         Helpers.Wait();
     }

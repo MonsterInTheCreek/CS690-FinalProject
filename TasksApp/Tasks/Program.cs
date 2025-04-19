@@ -1,7 +1,5 @@
 ﻿namespace Tasks;
 
-using System.IO;
-
 class Program
 {
     static void Main(string[] args)
@@ -18,10 +16,7 @@ class Program
         Console.WriteLine("Known current limitations:");
         Console.WriteLine("--------------------------");
         Console.WriteLine("Target/Action - not used internally for new task creation");
-        Console.WriteLine("Target/Action - cannot remove items");
-        Console.WriteLine("UI is still a bit messy, but getting better");
         Console.WriteLine("Low priority Supplies functionality not implemented at all");
-        Console.WriteLine("Code in general is kludgy, needs much refactoring");
-        AppUI.Wait();
+        Helpers.Wait();
     }
 }

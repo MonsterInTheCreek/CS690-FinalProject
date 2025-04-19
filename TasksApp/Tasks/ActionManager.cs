@@ -2,19 +2,19 @@ namespace Tasks;
 
 public class ActionManager
 {
-     private static string nl = Environment.NewLine;  // save space
+     private readonly string _nl = Environment.NewLine;  // save space
      public List<TaskAction> TaskActions { get; set; }
      
-     string actionsFile = "actions.txt";
+     private readonly string _actionsFile = "actions.txt";
      
      public ActionManager()
      {
-         BuildFileIfNull(actionsFile,
-             "clean" + nl + "dust" + nl + "wipe" + nl + "sweep" + nl + "wash" + nl
+         BuildFileIfNull(_actionsFile,
+             "clean" + _nl + "dust" + _nl + "wipe" + _nl + "sweep" + _nl + "wash" + _nl
              );
 
          TaskActions = new List<TaskAction>();
-         var actionsFileData = File.ReadAllLines(actionsFile);
+         var actionsFileData = File.ReadAllLines(_actionsFile);
 
          foreach (string actionName in actionsFileData)
          {
@@ -22,7 +22,7 @@ public class ActionManager
          }
      }
 
-     public void BuildFileIfNull(string newFile, string dummyData)
+     private void BuildFileIfNull(string newFile, string dummyData)
      {
          if (!File.Exists(newFile))
          {
@@ -31,12 +31,12 @@ public class ActionManager
          }
      }
      
-     public void SyncActions()
+     private void SyncActions()
      {
-         File.Delete(actionsFile);
+         File.Delete(_actionsFile);
          foreach (var taskAction in TaskActions)
          {
-             File.AppendAllText(actionsFile, taskAction.Name + nl);
+             File.AppendAllText(_actionsFile, taskAction.Name + _nl);
          }
      }
 
@@ -46,9 +46,22 @@ public class ActionManager
          SyncActions();
      }
 
-     public void RemoveAction(TaskAction taskAction)
+     public void RemoveAction()
      {
-         TaskActions.Remove(taskAction);
+         List<String> actionNames = TaskActions.Select(yada => yada.Name).ToList();
+         string userChoiceAction = Helpers.MakeChoice(actionNames);
+         int iAction = actionNames.IndexOf(userChoiceAction);
+         TaskActions.RemoveAt(iAction);
          SyncActions();
+     }
+
+     public void DisplayActions()
+     {
+         Console.Clear();
+         Console.WriteLine("Actions:" + _nl + "--------");
+         foreach (TaskAction taskAction in TaskActions)
+         {
+             Console.WriteLine(taskAction);
+         }
      }
 }

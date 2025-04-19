@@ -2,19 +2,19 @@ namespace Tasks;
 
 public class TargetManager
 {
-     private static string nl = Environment.NewLine;  // save space
+     private readonly string _nl = Environment.NewLine;  // save space
      public List<TaskTarget> TaskTargets { get; set; }
      
-     string targetsFile = "targets.txt";
+     private readonly string _targetsFile = "targets.txt";
      
      public TargetManager()
      {
-         BuildFileIfNull(targetsFile,
-             "bathroom" + nl + "shelves" + nl + "counter" + nl + "floor" + nl + "dishes" + nl
+         BuildFileIfNull(_targetsFile,
+             "bathroom" + _nl + "shelves" + _nl + "counter" + _nl + "floor" + _nl + "dishes" + _nl
              );
          
          TaskTargets = new List<TaskTarget>();
-         var targetsFileData = File.ReadAllLines(targetsFile);
+         var targetsFileData = File.ReadAllLines(_targetsFile);
 
          foreach (string targetName in targetsFileData)
          {
@@ -22,7 +22,7 @@ public class TargetManager
          }
      }
 
-     public void BuildFileIfNull(string newFile, string dummyData)
+     private void BuildFileIfNull(string newFile, string dummyData)
      {
          if (!File.Exists(newFile))
          {
@@ -31,12 +31,12 @@ public class TargetManager
          }
      }
      
-     public void SyncTargets()
+     private void SyncTargets()
      {
-         File.Delete(targetsFile);
+         File.Delete(_targetsFile);
          foreach (var taskTarget in TaskTargets)
          {
-             File.AppendAllText(targetsFile, taskTarget.Name + nl);
+             File.AppendAllText(_targetsFile, taskTarget.Name + _nl);
          }
      }
 
@@ -46,9 +46,22 @@ public class TargetManager
          SyncTargets();
      }
 
-     public void RemoveTarget(TaskTarget taskTarget)
+     public void RemoveTarget()
      {
-         TaskTargets.Remove(taskTarget);
+         List<String> targetNames = TaskTargets.Select(yada => yada.Name).ToList();
+         string userChoiceTarget = Helpers.MakeChoice(targetNames);
+         int iTarget = targetNames.IndexOf(userChoiceTarget);
+         TaskTargets.RemoveAt(iTarget);
          SyncTargets();
+     }
+
+     public void DisplayTargets()
+     {
+         Console.Clear();
+         Console.WriteLine("Targets:" + _nl + "--------");
+         foreach (TaskTarget taskTarget in TaskTargets)
+         {
+             Console.WriteLine(taskTarget);
+         }
      }
 }

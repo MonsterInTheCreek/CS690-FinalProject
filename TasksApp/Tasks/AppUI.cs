@@ -23,7 +23,7 @@ public class AppUI
             {
                 Console.Clear();
                 string mode = Helpers.MakeChoice(new List<string> 
-                    { "Add task", "List tasks", "Complete task", "Quit" });
+                    { "Add task", "List tasks", "Remove task", "Complete task", "Quit" });
         
                 if (mode == "Add task")
                 {
@@ -35,7 +35,12 @@ public class AppUI
                     Console.Clear();
                     taskManager.ListTasks();
                     // pause (hard-coded into ListTasks, see note, don't use Wait)
-                    
+
+                } else if (mode == "Remove task")
+                {
+
+                    Console.WriteLine("Not ready yet");
+
                 } else if (mode == "Complete task")
                 {
                     Console.Clear();

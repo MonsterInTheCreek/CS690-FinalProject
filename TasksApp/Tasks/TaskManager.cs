@@ -88,13 +88,25 @@ public class TaskManager
         table.AddColumn("[red]Target[/]");
         table.AddColumn("[red]Scheduled Date[/]");
         table.AddColumn("[red]Frequency (in days)[/]");
+        table.AddColumn("[red]Days Since Previous[/]");
         foreach (AppTask task in AppTasks)
         {
+            string sinceDays;
+            if (task.PrevDate == null)
+            {
+                sinceDays = "N/A";
+            }
+            else
+            {
+                sinceDays = (_today - task.PrevDate.Value).Days.ToString();
+            }
+            
             table.AddRow(
                 task.TaskAction.Name,
                 task.TaskTarget.Name,
                 task.ScheduleDate.ToString("MM/dd/yy"),
-                task.Frequency.ToString()
+                task.Frequency.ToString(),
+                sinceDays
             );
         }
 

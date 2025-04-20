@@ -13,6 +13,7 @@ public class AppUI
             TargetManager targetManager = new TargetManager();
             ActionManager actionManager = new ActionManager();
             TaskManager taskManager = new TaskManager();
+            SupplyManager supplyManager = new SupplyManager();
             
             taskManager.TodayRecap();
             
@@ -82,8 +83,25 @@ public class AppUI
                 
             }  else if (entryChoice == "Review supplies")
             {
-                Console.WriteLine(_nl + "Not implemented yet");
-                Helpers.Wait();
+                supplyManager.DisplaySupplies();
+
+                string supplyChoice = Helpers.MakeChoice(new List<string>
+                    { "Add supply", "Remove supply", "Update amount", "Quit" });
+                if (supplyChoice == "Add supply")
+                {
+                    ActionSupply supply = SupplyManager.AskForSupply();
+                    supplyManager.AddSupply(supply);
+
+                }
+                else if (supplyChoice == "Remove supply")
+                {
+                    supplyManager.RemoveSupply();
+                } 
+                else if (supplyChoice == "Update amount")
+                {
+                    supplyManager.UpdateAmount();
+                }
+                Console.Clear();
             }
         } while (entryChoice != "Exit");
     }

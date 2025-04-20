@@ -4,6 +4,4 @@ clean;bathroom;04/21/25;7;04/14/25;
 wipe;counter;04/25/25;7;04/18/25;
 wash;car;04/29/25;14;04/15/25;
 wipe;shelves;04/26/25;7;04/19/25;
-wash;car;04/25/25;10;;
-sweep;bathroom;05/01/25;7;;
-dust;car;05/01/25;10;;
+wash;car;04/30/25;10;04/20/25;

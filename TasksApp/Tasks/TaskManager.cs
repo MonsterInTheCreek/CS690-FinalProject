@@ -133,6 +133,17 @@ public class TaskManager
         Console.WriteLine("");
         Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
         Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
+
+        var userChoice = AnsiConsole.Prompt(
+            new TextPrompt<bool>("Would you like to update supply value?")
+                .AddChoice(true)
+                .AddChoice(false)
+                .WithConverter(choice => choice ? "y" : "n"));
+        if (userChoice)
+        {
+            SupplyManager supplyManager = new SupplyManager();
+            supplyManager.UpdateAmount();
+        }
     }
 
     public void RemoveTask()

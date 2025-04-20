@@ -25,8 +25,6 @@ public class TaskAction : TaskElement
     public TaskAction(string name) : base(name) { }
 }
 
-// ActionSupply class definition, pending, lower priority
-
 public class AppTask
 {
     public TaskAction TaskAction { get; set; }
@@ -42,5 +40,19 @@ public class AppTask
         this.ScheduleDate = schedDate;
         this.Frequency = frequency;
         this.PrevDate = prevDate;
+    }
+}
+
+public class ActionSupply
+{
+    public string Name { get; set; }
+    public bool AmountCanChange { get; set; }
+    public int Amount { get; set; }
+
+    public ActionSupply(string name, bool amountCanChange, int amount)
+    {
+        this.Name = name;
+        this.AmountCanChange = amountCanChange;
+        this.Amount = amount;
     }
 }

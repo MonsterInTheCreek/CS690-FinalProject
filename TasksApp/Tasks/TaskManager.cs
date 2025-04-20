@@ -19,7 +19,7 @@ public class TaskManager
 
             var action = new TaskAction(split[0]);
             var target = new TaskTarget(split[1]);
-            var schedDate = DateTime.Parse(split[2]);
+            var scheduleDate = DateTime.Parse(split[2]);
             var frequency = int.Parse(split[3]);
 
             DateTime? prevDate;
@@ -31,8 +31,10 @@ public class TaskManager
             {
                 prevDate = null;
             }
+            
+            var isSupply = bool.Parse(split[5]);
 
-            AppTasks.Add(new AppTask(action, target, schedDate, frequency, prevDate));
+            AppTasks.Add(new AppTask(action, target, scheduleDate, frequency, prevDate, isSupply));
         }
     }
 
@@ -70,7 +72,8 @@ public class TaskManager
                                     task.TaskTarget.Name + ";" +
                                     task.ScheduleDate.ToString("MM/dd/yy") + ";" +
                                     task.Frequency + ";" +
-                                    helperPrevDate + ";" + _nl;
+                                    helperPrevDate + ";" + 
+                                    task.IsSupply + ";" + _nl;
             File.AppendAllText(_tasksFile, taskSerialized);
         }
     }
@@ -91,22 +94,34 @@ public class TaskManager
         table.AddColumn("[red]Days Since Previous[/]");
         foreach (AppTask task in AppTasks)
         {
-            string sinceDays;
+            // catch null on PrevDate
+            string prevDate;
             if (task.PrevDate == null)
             {
-                sinceDays = "N/A";
+                prevDate = "N/A";
             }
             else
             {
-                sinceDays = (_today - task.PrevDate.Value).Days.ToString();
+                prevDate = (_today - task.PrevDate.Value).Days.ToString();
+            }
+
+            // catch null on Frequency (re supply reorder)
+            string frequency;
+            if (task.Frequency > 700)       // catch based on arbitrary large number
+            {
+                frequency = "N/A";
+            }
+            else
+            {
+                frequency = task.Frequency.ToString();
             }
             
             table.AddRow(
                 task.TaskAction.Name,
                 task.TaskTarget.Name,
                 task.ScheduleDate.ToString("MM/dd/yy"),
-                task.Frequency.ToString(),
-                sinceDays
+                frequency,
+                prevDate
             );
         }
 
@@ -121,18 +136,45 @@ public class TaskManager
         int iComplete = ChooseTask();
         AppTask oldTask = AppTasks[iComplete];
         
-        AppTask newTask = new AppTask(
-            oldTask.TaskAction,                             // maintain current
-            oldTask.TaskTarget,                             // maintain current
-            _today.AddDays(oldTask.Frequency),     // new scheduleDate = today + frequency
-            oldTask.Frequency,                              // maintain current
-            _today);                                        // new prevDate = today
-        AppTasks[iComplete] = newTask;
-        SyncTasks();
-        
-        Console.WriteLine("");
-        Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
-        Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
+        if (oldTask.IsSupply)
+        {
+            AppTasks.RemoveAt(iComplete);
+            SyncTasks();
+            Console.WriteLine("");
+            Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
+            // No notice of new scheduled date, because supply purchases do not reschedule automatically.
+            SupplyManager supplyManager = new SupplyManager();
+            supplyManager.ResetSupply(oldTask.TaskTarget.Name);
+        }
+        else
+        {
+            AppTask newTask = new AppTask(
+                oldTask.TaskAction,                             // maintain current
+                oldTask.TaskTarget,                             // maintain current
+                _today.AddDays(oldTask.Frequency),     // new scheduleDate = today + frequency
+                oldTask.Frequency,                              // maintain current
+                _today,                                         // new prevDate = today
+                false                                   // will always be false
+                );
+            AppTasks[iComplete] = newTask;
+            
+            SyncTasks();
+            Console.WriteLine("");
+            Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
+            Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
+            
+            // offer choice only if not supply reorder
+            var userChoice = AnsiConsole.Prompt(
+                new TextPrompt<bool>("Would you like to update supply value?")
+                    .AddChoice(true)
+                    .AddChoice(false)
+                    .WithConverter(choice => choice ? "y" : "n"));
+            if (userChoice)
+            {
+                SupplyManager supplyManager = new SupplyManager();
+                supplyManager.UpdateAmount();
+            }
+        }
     }
 
     public void RemoveTask()
@@ -159,7 +201,8 @@ public class TaskManager
         DateTime scheduleDate = DateTime.Parse(Helpers.RequestInput("What day to schedule? (mm/dd/yy) "));
         int frequency = int.Parse(Helpers.RequestInput("What frequency? (in days) "));
         DateTime? prevDate = null;
-        AppTask task = new AppTask (taskAction, taskTarget, scheduleDate, frequency, prevDate);
+        // Tasks from users will never be Supply reorders, hence isSupply = false
+        AppTask task = new AppTask (taskAction, taskTarget, scheduleDate, frequency, prevDate, false);
         return task;
     }
 
@@ -178,5 +221,23 @@ public class TaskManager
         string userTaskChoice = Helpers.MakeChoice(mergedTasks);
         string index = userTaskChoice.Split(")")[0];
         return int.Parse(index);
+    }
+
+    public void AddSupplies(List<string> reorderSupplies)
+    {
+        if (reorderSupplies.Count != 0)
+        {
+            foreach (var supply in reorderSupplies)
+            {
+                AddTask(new AppTask(
+                    new TaskAction("reorder"),
+                    new TaskTarget(supply),
+                    DateTime.Now,
+                    730,                    // arbitrary large number as kludge catch for null
+                    null,
+                    true
+                ));
+            }
+        }
     }
 }

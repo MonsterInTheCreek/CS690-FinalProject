@@ -48,7 +48,7 @@ public class TargetManager
 
      public void RemoveTarget()
      {
-         List<String> targetNames = TaskTargets.Select(yada => yada.Name).ToList();
+         List<string> targetNames = TaskTargets.Select(yada => yada.Name).ToList();
          string userChoiceTarget = Helpers.MakeChoice(targetNames);
          int iTarget = targetNames.IndexOf(userChoiceTarget);
          TaskTargets.RemoveAt(iTarget);

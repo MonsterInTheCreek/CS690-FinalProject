@@ -12,10 +12,10 @@ public class ActionManager
          BuildFileIfNull(_actionsFile,
              "clean" + _nl + "dust" + _nl + "wipe" + _nl + "sweep" + _nl + "wash" + _nl
              );
-
+         
          TaskActions = new List<TaskAction>();
          var actionsFileData = File.ReadAllLines(_actionsFile);
-
+         
          foreach (string actionName in actionsFileData)
          {
              TaskActions.Add(new TaskAction(actionName));

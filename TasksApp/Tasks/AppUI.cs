@@ -6,15 +6,20 @@ public class AppUI
     public void Show()
     {
         string entryChoice;
-        
+
         do
         {
             // at top, reinstantiate everything
             TargetManager targetManager = new TargetManager();
             ActionManager actionManager = new ActionManager();
             TaskManager taskManager = new TaskManager();
-            
-            taskManager.TodayRecap();
+            SupplyManager supplyManager = new SupplyManager();
+
+            // check for supplies in reorder status (<= 20% remaining) --> add reorder as task
+            List<string> reorderSupplies = supplyManager.CheckSuppliesForReorder();
+            taskManager.AddSupplies(reorderSupplies);
+
+        taskManager.TodayRecap();
             
             entryChoice = Helpers.MakeChoice(new List<string>
                 { "Review tasks","Review targets","Review actions","Review supplies","Exit" });
@@ -82,8 +87,25 @@ public class AppUI
                 
             }  else if (entryChoice == "Review supplies")
             {
-                Console.WriteLine(_nl + "Not implemented yet");
-                Helpers.Wait();
+                supplyManager.DisplaySupplies();
+
+                string supplyChoice = Helpers.MakeChoice(new List<string>
+                    { "Add supply", "Remove supply", "Update amount", "Quit" });
+                if (supplyChoice == "Add supply")
+                {
+                    ActionSupply supply = SupplyManager.AskForSupply();
+                    supplyManager.AddSupply(supply);
+
+                }
+                else if (supplyChoice == "Remove supply")
+                {
+                    supplyManager.RemoveSupply();
+                } 
+                else if (supplyChoice == "Update amount")
+                {
+                    supplyManager.UpdateAmount();
+                }
+                Console.Clear();
             }
         } while (entryChoice != "Exit");
     }

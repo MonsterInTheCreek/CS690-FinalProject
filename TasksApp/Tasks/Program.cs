@@ -12,11 +12,11 @@ class Program
     static void Version()
     {
         Console.Clear();
-        Console.WriteLine("Version 1.0.1 - Alpha Release");
+        Console.WriteLine("Version pre-2.0.0 - Beta Release");
         Console.WriteLine("Known current limitations:");
         Console.WriteLine("--------------------------");
-        Console.WriteLine("Target/Action - not used internally for new task creation");
-        Console.WriteLine("Low priority Supplies functionality not implemented at all");
+        Console.WriteLine("All Use Cases and Functional Requirements met");
+        Console.WriteLine("Some kludge remains, but pragmatically project is successful.");
         Helpers.Wait();
     }
 }

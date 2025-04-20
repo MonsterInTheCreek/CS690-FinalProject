@@ -1,9 +1,7 @@
-sweep;kitchen;04/12/25;7;;
-clean;sink;04/21/25;3;04/18/25;
-clean;bathroom;04/21/25;7;04/14/25;
-wipe;counter;04/25/25;7;04/18/25;
-wash;car;04/29/25;14;04/15/25;
-wipe;shelves;04/26/25;7;04/19/25;
-wash;car;04/25/25;10;;
-sweep;bathroom;05/01/25;7;;
-dust;car;05/01/25;10;;
+sweep;kitchen;04/12/25;7;;False;
+clean;sink;04/21/25;3;04/18/25;False;
+clean;bathroom;04/21/25;7;04/14/25;False;
+wipe;counter;04/25/25;7;04/18/25;False;
+wash;car;04/29/25;14;04/15/25;False;
+wipe;shelves;04/26/25;7;04/19/25;False;
+wash;car;04/30/25;10;04/20/25;False;

@@ -1,0 +1,5 @@
+detergent;True;100;False;
+rags;False;100;False;
+broom;False;100;False;
+soap;True;100;False;
+car wax;True;100;False;

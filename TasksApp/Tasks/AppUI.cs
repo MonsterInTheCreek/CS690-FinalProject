@@ -6,7 +6,7 @@ public class AppUI
     public void Show()
     {
         string entryChoice;
-        
+
         do
         {
             // at top, reinstantiate everything
@@ -14,8 +14,12 @@ public class AppUI
             ActionManager actionManager = new ActionManager();
             TaskManager taskManager = new TaskManager();
             SupplyManager supplyManager = new SupplyManager();
-            
-            taskManager.TodayRecap();
+
+            // check for supplies in reorder status (<= 20% remaining) --> add reorder as task
+            List<string> reorderSupplies = supplyManager.CheckSuppliesForReorder();
+            taskManager.AddSupplies(reorderSupplies);
+
+        taskManager.TodayRecap();
             
             entryChoice = Helpers.MakeChoice(new List<string>
                 { "Review tasks","Review targets","Review actions","Review supplies","Exit" });

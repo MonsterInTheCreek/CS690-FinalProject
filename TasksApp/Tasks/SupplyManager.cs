@@ -11,11 +11,11 @@ public class SupplyManager
     public SupplyManager()
     {
         BuildFileIfNull(_suppliesFile,
-            "detergent;true;100" + _nl +
-            "soap;true;100" + _nl +
-            "rags;false;100" + _nl +
-            "car wax;true;100" + _nl +
-            "broom;false;100" + _nl
+            "detergent;true;100;false" + _nl +
+            "soap;true;100;false" + _nl +
+            "rags;false;100;false" + _nl +
+            "car wax;true;100;false" + _nl +
+            "broom;false;100;false" + _nl
             );
         
         ActionSupplies = new List<ActionSupply>();
@@ -27,8 +27,9 @@ public class SupplyManager
             var name = new string(split[0]);
             var amountCanChange = bool.Parse(split[1]);
             var amount = int.Parse(split[2]);
+            var onReorder = bool.Parse(split[3]);
             
-            ActionSupplies.Add(new ActionSupply(name, amountCanChange, amount));
+            ActionSupplies.Add(new ActionSupply(name, amountCanChange, amount, onReorder));
         }
     }
     
@@ -48,7 +49,8 @@ public class SupplyManager
         {
             string supplySerialized = supply.Name + ";" +
                                       supply.AmountCanChange + ";" +
-                                      supply.Amount + ";" + _nl;
+                                      supply.Amount + ";" +
+                                      supply.OnReorder + ";" + _nl;
             File.AppendAllText(_suppliesFile, supplySerialized);
         }
     }
@@ -77,7 +79,7 @@ public class SupplyManager
                 .AddChoice(false)
                 .AddChoice(true)
                 .WithConverter(choice => choice ? "consumable": "tool"));
-        ActionSupply newSupply = new ActionSupply (supply, canChange, 100);
+        ActionSupply newSupply = new ActionSupply (supply, canChange, 100, false);
         return newSupply;
     }
     
@@ -123,10 +125,47 @@ public class SupplyManager
                     $"{oldSupply.Name} currently is {currentAmount}% full." + _nl + 
                     "What is its new value? "));
                 ActionSupplies.RemoveAt(iSupply);
-                ActionSupply newSupply = new ActionSupply(oldSupply.Name, oldSupply.AmountCanChange, newAmount);
+                ActionSupply newSupply = new ActionSupply(oldSupply.Name, oldSupply.AmountCanChange, newAmount, oldSupply.OnReorder);
                 ActionSupplies.Add(newSupply);
                 SyncSupplies();
             }
         }
+    }
+
+    public List<string> CheckSuppliesForReorder()
+    {
+        List<string> reorderSupplies = new List<string>();
+        for (int i = 0; i < ActionSupplies.Count; i++)
+        {
+            if (ActionSupplies[i].Amount <= 20 && !ActionSupplies[i].OnReorder)
+            {
+                // update in supplies, flag onReorder == true
+                ActionSupply currentSupply = ActionSupplies[i]; 
+                reorderSupplies.Add(currentSupply.Name);
+                // update to flag onReorder
+                ActionSupplies[i] = new ActionSupply(
+                    currentSupply.Name, currentSupply.AmountCanChange, currentSupply.Amount, true
+                );
+                SyncSupplies();
+            }
+        }
+        return reorderSupplies;
+    }
+
+    public void ResetSupply(string reorderSupplies)
+    {
+        //Console.WriteLine("first pred true");
+        for (int i = 0; i < ActionSupplies.Count; i++)
+        {
+            if (reorderSupplies.Contains(ActionSupplies[i].Name))
+            {
+                //Console.WriteLine("second pred true");
+                ActionSupply currentSupply = ActionSupplies[i];
+                ActionSupplies[i] = new ActionSupply(
+                    currentSupply.Name, currentSupply.AmountCanChange, 100, false
+                );
+            }
+        }
+        SyncSupplies();
     }
 }

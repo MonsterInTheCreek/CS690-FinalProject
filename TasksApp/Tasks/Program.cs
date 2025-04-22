@@ -17,7 +17,7 @@ class Program
         Console.WriteLine("--------------------------");
         Console.WriteLine("All Use Cases and Functional Requirements met");
         Console.WriteLine("Some kludge remains, but pragmatically project is successful.");
-        Console.WriteLine("I'll save you some trouble - my unit tests are lacking.  I recognize that.");
+        Console.WriteLine("My unit tests aren't complete, could be fleshed out more.");
         Helpers.Wait();
     }
 }

@@ -13,7 +13,7 @@ public class InstantiationTests
             }
         }
     }
-    
+
     public class RemoveTarget
     {
         public RemoveTarget()
@@ -97,10 +97,6 @@ public class InstantiationTests
         
         Assert.Equal(dummySupplyData, actualSupplyFile);
     }    
-    
-    
-    
-    
 }
 
 

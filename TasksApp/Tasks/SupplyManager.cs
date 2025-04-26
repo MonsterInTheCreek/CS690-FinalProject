@@ -4,7 +4,7 @@ using Spectre.Console;
 
 public class SupplyManager
 {
-    private readonly string _nl = Environment.NewLine;  // save space
+    private readonly string _nl = Environment.NewLine; // save space
     public List<ActionSupply> ActionSupplies { get; set; }
     private readonly string _suppliesFile = "supplies.txt";
 
@@ -16,8 +16,8 @@ public class SupplyManager
             "rags;false;100;false" + _nl +
             "car wax;true;100;false" + _nl +
             "broom;false;100;false" + _nl
-            );
-        
+        );
+
         ActionSupplies = new List<ActionSupply>();
         var suppliesFileContent = File.ReadAllLines(_suppliesFile);
         foreach (var line in suppliesFileContent)
@@ -28,11 +28,11 @@ public class SupplyManager
             var amountCanChange = bool.Parse(split[1]);
             var amount = int.Parse(split[2]);
             var onReorder = bool.Parse(split[3]);
-            
+
             ActionSupplies.Add(new ActionSupply(name, amountCanChange, amount, onReorder));
         }
     }
-    
+
     private void BuildFileIfNull(string newFile, string dummyData)
     {
         if (!File.Exists(newFile))
@@ -78,11 +78,11 @@ public class SupplyManager
             new TextPrompt<bool>("Is this a permanent tool or a consumable?")
                 .AddChoice(false)
                 .AddChoice(true)
-                .WithConverter(choice => choice ? "consumable": "tool"));
-        ActionSupply newSupply = new ActionSupply (supply, canChange, 100, false);
+                .WithConverter(choice => choice ? "consumable" : "tool"));
+        ActionSupply newSupply = new ActionSupply(supply, canChange, 100, false);
         return newSupply;
     }
-    
+
     public void DisplaySupplies()
     {
         var table = new Table();
@@ -98,8 +98,9 @@ public class SupplyManager
                 supply.Amount.ToString()
             );
         }
+
         AnsiConsole.Write(table);
-        AnsiConsole.WriteLine("...Press any key...");   // renders wrong if use Wait()
+        AnsiConsole.WriteLine("...Press any key..."); // renders wrong if use Wait()
         Console.ReadKey();
         Console.Clear();
     }
@@ -122,10 +123,11 @@ public class SupplyManager
             {
                 string currentAmount = oldSupply.Amount.ToString();
                 int newAmount = Helpers.RequestInteger(
-                    $"{oldSupply.Name} currently is {currentAmount}% full." + _nl + 
+                    $"{oldSupply.Name} currently is {currentAmount}% full." + _nl +
                     "What is its new value? ");
                 ActionSupplies.RemoveAt(iSupply);
-                ActionSupply newSupply = new ActionSupply(oldSupply.Name, oldSupply.AmountCanChange, newAmount, oldSupply.OnReorder);
+                ActionSupply newSupply = new ActionSupply(oldSupply.Name, oldSupply.AmountCanChange, newAmount,
+                    oldSupply.OnReorder);
                 ActionSupplies.Add(newSupply);
                 SyncSupplies();
             }
@@ -140,7 +142,7 @@ public class SupplyManager
             if (ActionSupplies[i].Amount <= 20 && !ActionSupplies[i].OnReorder)
             {
                 // update in supplies, flag onReorder == true
-                ActionSupply currentSupply = ActionSupplies[i]; 
+                ActionSupply currentSupply = ActionSupplies[i];
                 reorderSupplies.Add(currentSupply.Name);
                 // update to flag onReorder
                 ActionSupplies[i] = new ActionSupply(
@@ -149,6 +151,7 @@ public class SupplyManager
                 SyncSupplies();
             }
         }
+
         return reorderSupplies;
     }
 
@@ -166,6 +169,7 @@ public class SupplyManager
                 );
             }
         }
+
         SyncSupplies();
     }
 }

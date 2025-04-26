@@ -15,8 +15,8 @@ public static class Helpers
         Console.Clear();
     }
 
-    public static void DisplayNames(string topTitle, List<string> elements) 
-    // This took much longer to figure out than I projected...
+    public static void DisplayNames(string topTitle, List<string> elements)
+        // This took much longer to figure out than I projected...
     {
         Console.Clear();
         var panel = new Panel(
@@ -27,7 +27,7 @@ public static class Helpers
     }
 
     public static string MakeChoice(List<string> choices)
-    // a form of validation, user can only choose from list
+        // a form of validation, user can only choose from list
     {
         string choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
@@ -37,7 +37,7 @@ public static class Helpers
     }
 
     public static string RequestString(string message)
-    // includes validation to prevent user from being too creative
+        // includes validation to prevent user from being too creative
     {
         string userString = AnsiConsole.Prompt(
             new TextPrompt<string>(message)
@@ -45,11 +45,12 @@ public static class Helpers
                 {
                     _ when input.Length == 0 => ValidationResult.Error("Word must be longer than 0 characters"),
                     _ when input.Length > 12 => ValidationResult.Error("Word must be shorter than 12 characters"),
-                    _ when !input.All(char.IsLetter) => ValidationResult.Error("Please, no numbers, spaces, or special characters"),
-                    
+                    _ when !input.All(char.IsLetter) => ValidationResult.Error(
+                        "Please, no numbers, spaces, or special characters"),
+
                     _ => ValidationResult.Success()
                 }));
-        
+
         return userString;
     }
 
@@ -63,13 +64,13 @@ public static class Helpers
                     _ when !int.TryParse(input, out _) => ValidationResult.Error("Number must be an integer"),
                     _ when input.Length == 0 => ValidationResult.Error("Number must not be null"),
                     _ when int.Parse(input) < 0 => ValidationResult.Error("Number cannot be less than 0"),
-                    
+
                     _ => ValidationResult.Success()
                 }));
 
         return int.Parse(userIntAsString);
     }
-    
+
     public static DateTime RequestDate(string message)
     {
         // includes validation to prevent user from being too creative
@@ -77,8 +78,9 @@ public static class Helpers
             new TextPrompt<string>(message)
                 .Validate((input) => input switch
                 {
-                    _ when !DateTime.TryParse(input, out _) => ValidationResult.Error("Please use date format mm/dd/yy"),
-                    
+                    _ when !DateTime.TryParse(input, out _) =>
+                        ValidationResult.Error("Please use date format mm/dd/yy"),
+
                     _ => ValidationResult.Success()
                 }));
 

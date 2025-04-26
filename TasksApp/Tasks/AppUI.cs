@@ -2,7 +2,8 @@ namespace Tasks;
 
 public class AppUI
 {
-    private readonly string _nl = Environment.NewLine;  // save space
+    private readonly string _nl = Environment.NewLine; // save space
+
     public void Show()
     {
         string entryChoice;
@@ -19,73 +20,76 @@ public class AppUI
             List<string> reorderSupplies = supplyManager.CheckSuppliesForReorder();
             taskManager.AddSupplies(reorderSupplies);
 
-        taskManager.TodayRecap();
-            
+            taskManager.TodayRecap();
+
             entryChoice = Helpers.MakeChoice(new List<string>
-                { "Review tasks","Review targets","Review actions","Review supplies","Exit" });
-            
+                { "Review tasks", "Review targets", "Review actions", "Review supplies", "Exit" });
+
             if (entryChoice == "Review tasks")
             {
                 Console.Clear();
-                string mode = Helpers.MakeChoice(new List<string> 
+                string mode = Helpers.MakeChoice(new List<string>
                     { "Add task", "List tasks", "Remove task", "Complete task", "Quit" });
-        
+
                 if (mode == "Add task")
                 {
                     AppTask task = TaskManager.AskForTask();
                     taskManager.AddTask(task);
-
-                } else if (mode == "List tasks")
+                }
+                else if (mode == "List tasks")
                 {
                     Console.Clear();
                     taskManager.ListTasks();
                     // pause (hard-coded into ListTasks, see note, don't use Wait)
-
-                } else if (mode == "Remove task")
+                }
+                else if (mode == "Remove task")
                 {
                     taskManager.RemoveTask();
-                } else if (mode == "Complete task")
+                }
+                else if (mode == "Complete task")
                 {
                     Console.Clear();
                     taskManager.CompleteTask();
                     Helpers.Wait();
                 }
-                
-            } else if (entryChoice == "Review targets")
+            }
+            else if (entryChoice == "Review targets")
             {
                 targetManager.DisplayTargets();
-                
-                string targetChoice = Helpers.MakeChoice(new List<string> 
+
+                string targetChoice = Helpers.MakeChoice(new List<string>
                     { "Add target", "Remove target", "Quit" });
                 if (targetChoice == "Add target")
                 {
                     string newTarget = Helpers.RequestString("What Target would you like to add? ");
                     targetManager.AddTarget(new TaskTarget(newTarget));
-                    
-                } else if (targetChoice == "Remove target")
+                }
+                else if (targetChoice == "Remove target")
                 {
                     targetManager.RemoveTarget();
                 }
+
                 Console.Clear();
-                
-            } else if (entryChoice == "Review actions")
+            }
+            else if (entryChoice == "Review actions")
             {
                 actionManager.DisplayActions();
-                
-                string actionChoice = Helpers.MakeChoice(new List<string> 
+
+                string actionChoice = Helpers.MakeChoice(new List<string>
                     { "Add action", "Remove action", "Quit" });
                 if (actionChoice == "Add action")
                 {
                     string newAction = Helpers.RequestString("What Action would you like to add?");
                     actionManager.AddAction(new TaskAction(newAction));
-                    
-                } else if (actionChoice == "Remove action")
+                }
+                else if (actionChoice == "Remove action")
                 {
                     actionManager.RemoveAction();
                 }
+
                 Console.Clear();
-                
-            }  else if (entryChoice == "Review supplies")
+            }
+            else if (entryChoice == "Review supplies")
             {
                 supplyManager.DisplaySupplies();
 
@@ -95,16 +99,16 @@ public class AppUI
                 {
                     ActionSupply supply = SupplyManager.AskForSupply();
                     supplyManager.AddSupply(supply);
-
                 }
                 else if (supplyChoice == "Remove supply")
                 {
                     supplyManager.RemoveSupply();
-                } 
+                }
                 else if (supplyChoice == "Update amount")
                 {
                     supplyManager.UpdateAmount();
                 }
+
                 Console.Clear();
             }
         } while (entryChoice != "Exit");

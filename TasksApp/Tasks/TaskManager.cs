@@ -6,7 +6,7 @@ public class TaskManager
 {
     private readonly string _nl = Environment.NewLine; // save space
     private readonly string _tasksFile = "tasks-current.txt";
-    private readonly DateTime _today = DateTime.Now; 
+    private readonly DateTime _today = DateTime.Now;
     private List<AppTask> AppTasks { get; set; }
 
     public TaskManager()
@@ -31,7 +31,7 @@ public class TaskManager
             {
                 prevDate = null;
             }
-            
+
             var isSupply = bool.Parse(split[5]);
 
             AppTasks.Add(new AppTask(action, target, scheduleDate, frequency, prevDate, isSupply));
@@ -41,7 +41,7 @@ public class TaskManager
     public void TodayRecap()
     {
         Console.WriteLine("Today is " + _today.ToString("MM/dd/yy"));
-            
+
         foreach (AppTask task in AppTasks)
         {
             if (task.ScheduleDate <= _today.Date)
@@ -72,7 +72,7 @@ public class TaskManager
                                     task.TaskTarget.Name + ";" +
                                     task.ScheduleDate.ToString("MM/dd/yy") + ";" +
                                     task.Frequency + ";" +
-                                    helperPrevDate + ";" + 
+                                    helperPrevDate + ";" +
                                     task.IsSupply + ";" + _nl;
             File.AppendAllText(_tasksFile, taskSerialized);
         }
@@ -107,7 +107,7 @@ public class TaskManager
 
             // catch null on Frequency (re supply reorder)
             string frequency;
-            if (task.Frequency > 700)       // catch based on arbitrary large number
+            if (task.Frequency > 700) // catch based on arbitrary large number
             {
                 frequency = "N/A";
             }
@@ -115,7 +115,7 @@ public class TaskManager
             {
                 frequency = task.Frequency.ToString();
             }
-            
+
             table.AddRow(
                 task.TaskAction.Name,
                 task.TaskTarget.Name,
@@ -126,7 +126,7 @@ public class TaskManager
         }
 
         AnsiConsole.Write(table);
-        AnsiConsole.WriteLine("...Press any key...");   // renders wrong if use Wait()
+        AnsiConsole.WriteLine("...Press any key..."); // renders wrong if use Wait()
         Console.ReadKey();
         Console.Clear();
     }
@@ -135,7 +135,7 @@ public class TaskManager
     {
         int iComplete = ChooseTask();
         AppTask oldTask = AppTasks[iComplete];
-        
+
         if (oldTask.IsSupply)
         {
             AppTasks.RemoveAt(iComplete);
@@ -149,20 +149,20 @@ public class TaskManager
         else
         {
             AppTask newTask = new AppTask(
-                oldTask.TaskAction,                             // maintain current
-                oldTask.TaskTarget,                             // maintain current
-                _today.AddDays(oldTask.Frequency),     // new scheduleDate = today + frequency
-                oldTask.Frequency,                              // maintain current
-                _today,                                         // new prevDate = today
-                false                                   // will always be false
-                );
+                oldTask.TaskAction, // maintain current
+                oldTask.TaskTarget, // maintain current
+                _today.AddDays(oldTask.Frequency), // new scheduleDate = today + frequency
+                oldTask.Frequency, // maintain current
+                _today, // new prevDate = today
+                false // will always be false
+            );
             AppTasks[iComplete] = newTask;
-            
+
             SyncTasks();
             Console.WriteLine("");
             Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
             Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
-            
+
             // offer choice only if not supply reorder
             var userChoice = AnsiConsole.Prompt(
                 new TextPrompt<bool>("Would you like to update supply value?")
@@ -183,14 +183,14 @@ public class TaskManager
         AppTasks.RemoveAt(iRemove);
         SyncTasks();
     }
-    
+
     public static AppTask AskForTask()
     {
         ActionManager actions = new ActionManager();
         TargetManager targets = new TargetManager();
         List<string> actionNames = actions.TaskActions.Select(yada => yada.Name).ToList();
         List<string> targetNames = targets.TaskTargets.Select(yada => yada.Name).ToList();
-        
+
         Console.Clear();
         Console.WriteLine("What task action?");
         TaskAction taskAction = new TaskAction(Helpers.MakeChoice(actionNames));
@@ -202,7 +202,7 @@ public class TaskManager
         int frequency = Helpers.RequestInteger("How often (in days)?");
         DateTime? prevDate = null;
         // Tasks from users will never be Supply reorders, hence isSupply = false
-        AppTask task = new AppTask (taskAction, taskTarget, scheduleDate, frequency, prevDate, false);
+        AppTask task = new AppTask(taskAction, taskTarget, scheduleDate, frequency, prevDate, false);
         return task;
     }
 
@@ -212,12 +212,13 @@ public class TaskManager
         // enumerate the list and return the index number
         for (int i = 0; i < AppTasks.Count; i++)
         {
-            mergedTasks.Add($"{i}) " + 
-            $"{AppTasks[i].TaskAction.Name} " + 
-            $"{AppTasks[i].TaskTarget.Name} due " +
-            $"{AppTasks[i].ScheduleDate.ToString("MM/dd/yy")}"
+            mergedTasks.Add($"{i}) " +
+                            $"{AppTasks[i].TaskAction.Name} " +
+                            $"{AppTasks[i].TaskTarget.Name} due " +
+                            $"{AppTasks[i].ScheduleDate.ToString("MM/dd/yy")}"
             );
         }
+
         string userTaskChoice = Helpers.MakeChoice(mergedTasks);
         string index = userTaskChoice.Split(")")[0];
         return int.Parse(index);
@@ -233,7 +234,7 @@ public class TaskManager
                     new TaskAction("reorder"),
                     new TaskTarget(supply),
                     DateTime.Now,
-                    730,                    // arbitrary large number as kludge catch for null
+                    730, // arbitrary large number as kludge catch for null
                     null,
                     true
                 ));

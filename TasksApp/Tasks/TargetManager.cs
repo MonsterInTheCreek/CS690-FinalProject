@@ -57,11 +57,7 @@ public class TargetManager
 
      public void DisplayTargets()
      {
-         Console.Clear();
-         Console.WriteLine("Targets:" + _nl + "--------");
-         foreach (TaskTarget taskTarget in TaskTargets)
-         {
-             Console.WriteLine(taskTarget);
-         }
+         List<string> targetNames = TaskTargets.Select(yada => yada.Name).ToList();
+         Helpers.DisplayNames("Targets", targetNames);
      }
 }

@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace Tasks;
 
 public class ActionManager
@@ -57,11 +59,7 @@ public class ActionManager
 
      public void DisplayActions()
      {
-         Console.Clear();
-         Console.WriteLine("Actions:" + _nl + "--------");
-         foreach (TaskAction taskAction in TaskActions)
-         {
-             Console.WriteLine(taskAction);
-         }
+         List<string> actionNames = TaskActions.Select(yada => yada.Name).ToList();
+         Helpers.DisplayNames("Actions", actionNames);
      }
 }

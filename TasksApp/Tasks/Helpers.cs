@@ -7,13 +7,23 @@ using Spectre.Console;
 // helper methods centralized
 public static class Helpers
 {
-
     public static void Wait()
     {
         Console.WriteLine("");
         Console.WriteLine("...Press any key...");
         Console.ReadKey(true);
         Console.Clear();
+    }
+
+    public static void DisplayNames(string topTitle, List<string> elements) 
+    // This took much longer to figure out than I projected...
+    {
+        Console.Clear();
+        var panel = new Panel(
+            new Rows(elements.Select(yada => new Text(yada)))
+        );
+        AnsiConsole.Write(topTitle + Environment.NewLine);
+        AnsiConsole.Write(panel);
     }
 
     public static string MakeChoice(List<string> choices)

@@ -198,8 +198,8 @@ public class TaskManager
         Console.WriteLine("Where will you perform this?");
         TaskTarget taskTarget = new TaskTarget(Helpers.MakeChoice(targetNames));
 
-        DateTime scheduleDate = DateTime.Parse(Helpers.RequestInput("What day to schedule? (mm/dd/yy) "));
-        int frequency = int.Parse(Helpers.RequestInput("What frequency? (in days) "));
+        DateTime scheduleDate = Helpers.RequestDate("What day to schedule? (mm/dd/yy) ");
+        int frequency = Helpers.RequestInteger("How often (in days)?");
         DateTime? prevDate = null;
         // Tasks from users will never be Supply reorders, hence isSupply = false
         AppTask task = new AppTask (taskAction, taskTarget, scheduleDate, frequency, prevDate, false);

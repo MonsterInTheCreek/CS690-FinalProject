@@ -59,7 +59,7 @@ public class AppUI
                     { "Add target", "Remove target", "Quit" });
                 if (targetChoice == "Add target")
                 {
-                    string newTarget = Helpers.RequestInput("What would you like to add? ");
+                    string newTarget = Helpers.RequestString("What Target would you like to add? ");
                     targetManager.AddTarget(new TaskTarget(newTarget));
                     
                 } else if (targetChoice == "Remove target")
@@ -76,7 +76,7 @@ public class AppUI
                     { "Add action", "Remove action", "Quit" });
                 if (actionChoice == "Add action")
                 {
-                    string newAction = Helpers.RequestInput("What would you like to add? ");
+                    string newAction = Helpers.RequestString("What Action would you like to add?");
                     actionManager.AddAction(new TaskAction(newAction));
                     
                 } else if (actionChoice == "Remove action")

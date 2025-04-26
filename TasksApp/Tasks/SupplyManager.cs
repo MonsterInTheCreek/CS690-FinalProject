@@ -73,7 +73,7 @@ public class SupplyManager
     public static ActionSupply AskForSupply()
     {
         Console.Clear();
-        string supply = Helpers.RequestInput("What supply to add? ");
+        string supply = Helpers.RequestString("What Supply would you like to add? ");
         var canChange = AnsiConsole.Prompt(
             new TextPrompt<bool>("Is this a permanent tool or a consumable?")
                 .AddChoice(false)
@@ -121,9 +121,9 @@ public class SupplyManager
             else
             {
                 string currentAmount = oldSupply.Amount.ToString();
-                int newAmount = int.Parse(Helpers.RequestInput(
+                int newAmount = Helpers.RequestInteger(
                     $"{oldSupply.Name} currently is {currentAmount}% full." + _nl + 
-                    "What is its new value? "));
+                    "What is its new value? ");
                 ActionSupplies.RemoveAt(iSupply);
                 ActionSupply newSupply = new ActionSupply(oldSupply.Name, oldSupply.AmountCanChange, newAmount, oldSupply.OnReorder);
                 ActionSupplies.Add(newSupply);

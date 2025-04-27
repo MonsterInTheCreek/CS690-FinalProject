@@ -3,7 +3,7 @@ namespace Tasks;
 public class ActionManager
 {
     private readonly string _nl = Environment.NewLine; // save space
-    public List<TaskAction> TaskActions { get; set; }
+    public List<TaskAction> TaskActions { get; }
 
     private readonly string _actionsFile = "actions.txt";
 

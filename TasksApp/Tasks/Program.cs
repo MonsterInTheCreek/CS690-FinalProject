@@ -10,7 +10,7 @@ class Program
         AppUI appUI = new AppUI();
         appUI.Show();
     }
-    
+
     static void Version()
     {
         Console.Clear();
@@ -25,10 +25,7 @@ class Program
             new Markup("[blue]Replaced most kludge, although a tiny amount remains[/]"),
             new Markup("[blue]See Developer Documentation for known minor bugs[/]")
         ));
-        
-        Helpers.Wait();        
+
+        Helpers.Wait();
     }
-    
-    
-    
 }

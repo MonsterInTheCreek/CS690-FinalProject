@@ -51,11 +51,12 @@ public class TargetManager
         List<string> targetNames = TaskTargets.Select(yada => yada.Name).ToList();
         targetNames.Add("quit");
         string userChoiceTarget = Helpers.MakeChoice(targetNames);
-
-
-        int iTarget = targetNames.IndexOf(userChoiceTarget);
-        TaskTargets.RemoveAt(iTarget);
-        SyncTargets();
+        if (userChoiceTarget != "quit")
+        {
+            int iTarget = targetNames.IndexOf(userChoiceTarget);
+            TaskTargets.RemoveAt(iTarget);
+            SyncTargets();
+        }
     }
 
     public void DisplayTargets()

@@ -107,7 +107,7 @@ public class TaskManager
 
             // catch null on Frequency (re supply reorder)
             string frequency;
-            if (task.Frequency > 700) // catch based on arbitrary large number
+            if (task.Frequency == -1)       // catch null value
             {
                 frequency = "N/A";
             }
@@ -134,45 +134,49 @@ public class TaskManager
     public void CompleteTask()
     {
         int iComplete = ChooseTask();
-        AppTask oldTask = AppTasks[iComplete];
-
-        if (oldTask.IsSupply)
+        if (iComplete != -1)     // catch quit flag
         {
-            AppTasks.RemoveAt(iComplete);
-            SyncTasks();
-            Console.WriteLine("");
-            Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
-            // No notice of new scheduled date, because supply purchases do not reschedule automatically.
-            SupplyManager supplyManager = new SupplyManager();
-            supplyManager.ResetSupply(oldTask.TaskTarget.Name);
-        }
-        else
-        {
-            AppTask newTask = new AppTask(
-                oldTask.TaskAction, // maintain current
-                oldTask.TaskTarget, // maintain current
-                _today.AddDays(oldTask.Frequency), // new scheduleDate = today + frequency
-                oldTask.Frequency, // maintain current
-                _today, // new prevDate = today
-                false // will always be false
-            );
-            AppTasks[iComplete] = newTask;
+            AppTask oldTask = AppTasks[iComplete];
 
-            SyncTasks();
-            Console.WriteLine("");
-            Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
-            Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
-
-            // offer choice only if not supply reorder
-            var userChoice = AnsiConsole.Prompt(
-                new TextPrompt<bool>("Would you like to update supply value?")
-                    .AddChoice(true)
-                    .AddChoice(false)
-                    .WithConverter(choice => choice ? "y" : "n"));
-            if (userChoice)
+            if (oldTask.IsSupply)
             {
+                AppTasks.RemoveAt(iComplete);
+                SyncTasks();
+                Console.WriteLine("");
+                Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
+                // No notice of new scheduled date, because supply purchases do not reschedule automatically.
                 SupplyManager supplyManager = new SupplyManager();
-                supplyManager.UpdateAmount();
+                supplyManager.ResetSupply(oldTask.TaskTarget.Name);
+                Helpers.Wait();
+            }
+            else
+            {
+                AppTask newTask = new AppTask(
+                    oldTask.TaskAction, // maintain current
+                    oldTask.TaskTarget, // maintain current
+                    _today.AddDays(oldTask.Frequency), // new scheduleDate = today + frequency
+                    oldTask.Frequency, // maintain current
+                    _today, // new prevDate = today
+                    false // will always be false
+                );
+                AppTasks[iComplete] = newTask;
+
+                SyncTasks();
+                Console.WriteLine("");
+                Console.WriteLine($"Congrats!  You completed {oldTask.TaskAction.Name} {oldTask.TaskTarget.Name}");
+                Console.WriteLine($"This task is now scheduled for {newTask.ScheduleDate.ToString("MM/dd/yy")}");
+
+                // offer choice only if not supply reorder
+                var userChoice = AnsiConsole.Prompt(
+                    new TextPrompt<bool>("Would you like to update supply value?")
+                        .AddChoice(true)
+                        .AddChoice(false)
+                        .WithConverter(choice => choice ? "y" : "n"));
+                if (userChoice)
+                {
+                    SupplyManager supplyManager = new SupplyManager();
+                    supplyManager.UpdateAmount();
+                }
             }
         }
     }
@@ -180,8 +184,12 @@ public class TaskManager
     public void RemoveTask()
     {
         int iRemove = ChooseTask();
-        AppTasks.RemoveAt(iRemove);
-        SyncTasks();
+        if (iRemove != -1)      // catch quit flag
+        {
+            AppTasks.RemoveAt(iRemove);
+            SyncTasks();
+        }
+        
     }
 
     public static AppTask AskForTask()
@@ -218,10 +226,18 @@ public class TaskManager
                             $"{AppTasks[i].ScheduleDate.ToString("MM/dd/yy")}"
             );
         }
-
+        // add extra for quit
+        mergedTasks.Add("quit");
         string userTaskChoice = Helpers.MakeChoice(mergedTasks);
-        string index = userTaskChoice.Split(")")[0];
-        return int.Parse(index);
+        if (userTaskChoice == "quit")
+        {
+            return -1;  // pass -1 as quit flag
+        }
+        else
+        {
+            string index = userTaskChoice.Split(")")[0];
+            return int.Parse(index);   
+        }
     }
 
     public void AddSupplies(List<string> reorderSupplies)
@@ -234,7 +250,7 @@ public class TaskManager
                     new TaskAction("reorder"),
                     new TaskTarget(supply),
                     DateTime.Now,
-                    730, // arbitrary large number as kludge catch for null
+                    -1,     // -1 to denote null
                     null,
                     true
                 ));

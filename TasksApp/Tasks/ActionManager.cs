@@ -51,10 +51,14 @@ public class ActionManager
     public void RemoveAction()
     {
         List<String> actionNames = TaskActions.Select(yada => yada.Name).ToList();
+        actionNames.Add("quit");
         string userChoiceAction = Helpers.MakeChoice(actionNames);
-        int iAction = actionNames.IndexOf(userChoiceAction);
-        TaskActions.RemoveAt(iAction);
-        SyncActions();
+        if (userChoiceAction != "quit")
+        {
+            int iAction = actionNames.IndexOf(userChoiceAction);
+            TaskActions.RemoveAt(iAction);
+            SyncActions();
+        }
     }
 
     public void DisplayActions()

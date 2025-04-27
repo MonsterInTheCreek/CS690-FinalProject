@@ -64,10 +64,14 @@ public class SupplyManager
     public void RemoveSupply()
     {
         List<string> supplyNames = ActionSupplies.Select(yada => yada.Name).ToList();
+        supplyNames.Add("quit");
         string userChoiceSupply = Helpers.MakeChoice(supplyNames);
-        int iSupply = supplyNames.IndexOf(userChoiceSupply);
-        ActionSupplies.RemoveAt(iSupply);
-        SyncSupplies();
+        if (userChoiceSupply != "quit")
+        {
+            int iSupply = supplyNames.IndexOf(userChoiceSupply);
+            ActionSupplies.RemoveAt(iSupply);
+            SyncSupplies();
+        }
     }
 
     public static ActionSupply AskForSupply()
@@ -89,7 +93,6 @@ public class SupplyManager
         table.AddColumn("[red]Supply[/]");
         table.AddColumn("[red]Is Consumable?[/]");
         table.AddColumn("[red]Amount[/]");
-        // somehow list Action(s) this supply is associated with?
         foreach (ActionSupply supply in ActionSupplies)
         {
             table.AddRow(

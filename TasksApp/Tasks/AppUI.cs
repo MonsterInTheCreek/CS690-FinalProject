@@ -19,7 +19,8 @@ public class AppUI
             // check for supplies in reorder status (<= 20% remaining) --> add reorder as task
             List<string> reorderSupplies = supplyManager.CheckSuppliesForReorder();
             taskManager.AddSupplies(reorderSupplies);
-
+            
+            taskManager = new TaskManager();    // force reinstantiate, kinda' kludgy but resolves rare bug
             taskManager.TodayRecap();
 
             entryChoice = Helpers.MakeChoice(new List<string>
@@ -50,7 +51,7 @@ public class AppUI
                 {
                     Console.Clear();
                     taskManager.CompleteTask();
-                    Helpers.Wait();
+                    Console.Clear();
                 }
             }
             else if (entryChoice == "Review targets")

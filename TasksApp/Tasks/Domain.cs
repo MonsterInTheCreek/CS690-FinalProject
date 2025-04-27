@@ -38,12 +38,13 @@ public class AppTask
     public DateTime? PrevDate { get; } // set only at instantiation, but null is valid for first use
     public bool IsSupply { get; set; }
 
-    public AppTask(TaskAction taskAction, TaskTarget taskTarget, DateTime schedDate, int frequency, DateTime? prevDate,
+    public AppTask(TaskAction taskAction, TaskTarget taskTarget, DateTime scheduleDate, int frequency,
+        DateTime? prevDate,
         bool isSupply)
     {
         this.TaskAction = taskAction;
         this.TaskTarget = taskTarget;
-        this.ScheduleDate = schedDate;
+        this.ScheduleDate = scheduleDate;
         this.Frequency = frequency;
         this.PrevDate = prevDate;
         this.IsSupply = isSupply;

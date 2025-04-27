@@ -107,7 +107,7 @@ public class TaskManager
 
             // catch null on Frequency (re supply reorder)
             string frequency;
-            if (task.Frequency == -1)       // catch null value
+            if (task.Frequency == -1) // catch null value
             {
                 frequency = "N/A";
             }
@@ -134,7 +134,7 @@ public class TaskManager
     public void CompleteTask()
     {
         int iComplete = ChooseTask();
-        if (iComplete != -1)     // catch quit flag
+        if (iComplete != -1) // catch quit flag
         {
             AppTask oldTask = AppTasks[iComplete];
 
@@ -184,12 +184,11 @@ public class TaskManager
     public void RemoveTask()
     {
         int iRemove = ChooseTask();
-        if (iRemove != -1)      // catch quit flag
+        if (iRemove != -1) // catch quit flag
         {
             AppTasks.RemoveAt(iRemove);
             SyncTasks();
         }
-        
     }
 
     public static AppTask AskForTask()
@@ -226,17 +225,18 @@ public class TaskManager
                             $"{AppTasks[i].ScheduleDate.ToString("MM/dd/yy")}"
             );
         }
+
         // add extra for quit
         mergedTasks.Add("quit");
         string userTaskChoice = Helpers.MakeChoice(mergedTasks);
         if (userTaskChoice == "quit")
         {
-            return -1;  // pass -1 as quit flag
+            return -1; // pass -1 as quit flag
         }
         else
         {
             string index = userTaskChoice.Split(")")[0];
-            return int.Parse(index);   
+            return int.Parse(index);
         }
     }
 
@@ -250,7 +250,7 @@ public class TaskManager
                     new TaskAction("reorder"),
                     new TaskTarget(supply),
                     DateTime.Now,
-                    -1,     // -1 to denote null
+                    -1, // -1 to denote null
                     null,
                     true
                 ));

@@ -1,5 +1,3 @@
-using System.Diagnostics.Tracing;
-
 namespace Tasks;
 
 using Spectre.Console;

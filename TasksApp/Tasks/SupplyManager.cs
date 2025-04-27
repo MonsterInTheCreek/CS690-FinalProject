@@ -5,7 +5,7 @@ using Spectre.Console;
 public class SupplyManager
 {
     private readonly string _nl = Environment.NewLine; // save space
-    public List<ActionSupply> ActionSupplies { get; set; }
+    private List<ActionSupply> ActionSupplies { get; set; }
     private readonly string _suppliesFile = "supplies.txt";
 
     public SupplyManager()

@@ -1,3 +1,5 @@
+using Spectre.Console.Rendering;
+
 namespace Tasks;
 
 using Spectre.Console;
@@ -40,17 +42,44 @@ public class TaskManager
 
     public void TodayRecap()
     {
-        Console.WriteLine("Today is " + _today.ToString("MM/dd/yy"));
 
+        //Console.WriteLine("Today is " + _today.ToString("MM/dd/yy"));
+
+        // foreach (AppTask task in AppTasks)
+        // {
+        //     if (task.ScheduleDate <= _today.Date)
+        //     {
+        //         Console.WriteLine(
+        //             task.TaskAction + " " + task.TaskTarget + " is due today!"
+        //         );
+        //     }
+        // }
+
+        // AnsiConsole.Write(new Rows(
+        //     new Markup($"[red]Today is {_today.ToString("MM/dd/yy")}[/]"),
+        //     new Markup(" "),
+        //
+        //
+        // foreach (AppTask task in AppTasks)
+        // {
+        //     if (task.ScheduleDate <= _today.Date)
+        //     {
+        //         new Markup($"[yellow]{task.TaskAction} {task.TaskTarget} is due today![/]");
+        //     }
+        // }
+        // );
+        
+        List<IRenderable> todayRecap = new List<IRenderable>();
+        todayRecap.Add(new Markup($"[red]Today is {_today.ToString("MM/dd/yy")}[/]"));
         foreach (AppTask task in AppTasks)
         {
             if (task.ScheduleDate <= _today.Date)
             {
-                Console.WriteLine(
-                    task.TaskAction + " " + task.TaskTarget + " is due today!"
-                );
+                todayRecap.Add(new Markup($"[yellow]{task.TaskAction} {task.TaskTarget} is due today![/]"));
             }
         }
+        todayRecap.Add(new Markup(" "));
+        AnsiConsole.Write(new Rows(todayRecap));
     }
 
     private void SyncTasks()

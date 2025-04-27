@@ -3,7 +3,7 @@ namespace Tasks;
 public class TargetManager
 {
     private readonly string _nl = Environment.NewLine; // save space
-    public List<TaskTarget> TaskTargets { get; set; }
+    public List<TaskTarget> TaskTargets { get; }
 
     private readonly string _targetsFile = "targets.txt";
 

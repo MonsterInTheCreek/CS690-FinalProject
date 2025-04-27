@@ -1,3 +1,5 @@
+using Spectre.Console.Rendering;
+
 namespace Tasks;
 
 using Spectre.Console;
@@ -7,7 +9,7 @@ public class TaskManager
     private readonly string _nl = Environment.NewLine; // save space
     private readonly string _tasksFile = "tasks-current.txt";
     private readonly DateTime _today = DateTime.Now;
-    private List<AppTask> AppTasks { get; set; }
+    private List<AppTask> AppTasks { get; }
 
     public TaskManager()
     {
@@ -40,17 +42,18 @@ public class TaskManager
 
     public void TodayRecap()
     {
-        Console.WriteLine("Today is " + _today.ToString("MM/dd/yy"));
-
+        List<IRenderable> todayRecap = new List<IRenderable>();
+        todayRecap.Add(new Markup($"[red]Today is {_today.ToString("MM/dd/yy")}[/]"));
         foreach (AppTask task in AppTasks)
         {
             if (task.ScheduleDate <= _today.Date)
             {
-                Console.WriteLine(
-                    task.TaskAction + " " + task.TaskTarget + " is due today!"
-                );
+                todayRecap.Add(new Markup($"[yellow]{task.TaskAction} {task.TaskTarget} is due today![/]"));
             }
         }
+
+        todayRecap.Add(new Markup(" "));
+        AnsiConsole.Write(new Rows(todayRecap));
     }
 
     private void SyncTasks()

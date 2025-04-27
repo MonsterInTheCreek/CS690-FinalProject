@@ -31,12 +31,12 @@ public class TaskAction : TaskElement
 
 public class AppTask
 {
-    public TaskAction TaskAction { get; set; }
-    public TaskTarget TaskTarget { get; set; }
-    public DateTime ScheduleDate { get; set; }
-    public int Frequency { get; set; }
+    public TaskAction TaskAction { get; }
+    public TaskTarget TaskTarget { get; }
+    public DateTime ScheduleDate { get; }
+    public int Frequency { get; }
     public DateTime? PrevDate { get; } // set only at instantiation, but null is valid for first use
-    public bool IsSupply { get; set; }
+    public bool IsSupply { get; }
 
     public AppTask(TaskAction taskAction, TaskTarget taskTarget, DateTime scheduleDate, int frequency,
         DateTime? prevDate,
@@ -53,10 +53,10 @@ public class AppTask
 
 public class ActionSupply
 {
-    public string Name { get; set; }
-    public bool AmountCanChange { get; set; }
-    public int Amount { get; set; }
-    public bool OnReorder { get; set; }
+    public string Name { get; }
+    public bool AmountCanChange { get; }
+    public int Amount { get; }
+    public bool OnReorder { get; }
 
     public ActionSupply(string name, bool amountCanChange, int amount, bool onReorder)
     {
